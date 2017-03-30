@@ -3,22 +3,23 @@ import sys
 from Camera import Camera
 from Sprite import *
 
-#Constants
+# Constants
 WIN_WIDTH = 800
 WIN_HEIGHT = 640
 HALF_WIDTH = int(WIN_WIDTH / 2)
 HALF_HEIGHT = int(WIN_HEIGHT / 2)
 DISPLAY = (WIN_WIDTH, WIN_HEIGHT)
-ACTUAL_WIDTH = 1500
-ACTUAL_HEIGHT = 1000
+ACTUAL_WIDTH = 1067
+ACTUAL_HEIGHT = 640
 
-#Start setting up PyGame
+# Start setting up PyGame
 pygame.init()
 screen = pygame.display.set_mode(DISPLAY)
 pygame.display.set_caption("STORM!")
 
+
 def main():
-    #variables
+    # variables
     left = right = False
     Sprites = pygame.sprite.Group()
     platforms = []
@@ -27,13 +28,13 @@ def main():
 
     x = y = 0
     level = [
-        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
-        "P                                P",
-        "P                                P",
-        "P           PPPPPPPPPP           P",
-        "P                          P     P",
-        "P                                P",
-        "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",]
+        "     PPPPPPPPPPPPPPPPPPPPPPP     ",
+        "     P                     P     ",
+        "     P                     P     ",
+        "     P           PPPPPPPPPPP     ",
+        "     P                     P     ",
+        "     P                     P     ",
+        "     PPPPPPPPPPPPPPPPPPPPPPP     ",]
 
     # build the level
     for row in level:
@@ -46,16 +47,16 @@ def main():
         y += 32
         x = 0
 
-    #create the camera with a complex camera (will autofit to the boundaries of the screen
+    # create the camera with a complex camera (will autofit to the boundaries of the screen
     camera = Camera(complex_camera, ACTUAL_WIDTH, ACTUAL_HEIGHT)
 
-    #create the player
-    player = Sprite("sprite/DisasterPlayer.png", 40, (len(level)*32) - 35*2, 32, 32, 1)
+    # create the player
+    player = Sprite("sprite/DisasterPlayer.png", 400, (len(level)*32) - 35*2, 32, 32, 1)
     Sprites.add(player)
 
-    #game time
+    # game time
     while True:
-        #read input
+        # read input
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
                 sys.exit()
@@ -72,15 +73,17 @@ def main():
                 if event.key == pygame.K_a:
                     left = False
 
-        spritesToModify = Sprites.sprites() #get list of sprites
+        spritesToModify = Sprites.sprites()  # get list of sprites
         for sprite in spritesToModify:
-            #player manipulations
+            # player manipulations
             if sprite.identity == 1:
-                hitList = pygame.sprite.spritecollide(sprite, Sprites, False) #get list of obj's colliding with current sprite
+                # get list of obj's colliding with current sprite
+                hitList = pygame.sprite.spritecollide(sprite, Sprites, False)
 
                 # update positions (using pixel-perfect movement)
-                if sprite.rect.bottom <= ACTUAL_HEIGHT and sprite.rect.top >= 0 and sprite.rect.right <= ACTUAL_WIDTH and sprite.rect.left >= 0:
-                    #movement
+                if sprite.rect.bottom <= ACTUAL_HEIGHT and sprite.rect.top >= 0 and sprite.rect.right <= ACTUAL_WIDTH \
+                   and sprite.rect.left >= 0:
+                    # movement
                     if sprite.identity == 1:
                         speed = 0
                         if left:
@@ -90,40 +93,45 @@ def main():
 
                         sprite.rect.centerx += speed
 
-                        #collision handling for player
+                        # moves the background along with the player
+                        background.rect.x -= speed
+
+                        # collision handling for player
                         for hit in hitList:
                             if hit.identity == 0:  # a barrier was hit
                                 if speed > 0:  # was moving right
-                                    while pygame.sprite.collide_rect(player, hit): # correction
+                                    while pygame.sprite.collide_rect(player, hit):  # correction
                                         player.rect.centerx -= 1
+                                        background.rect.x += 1
                                 if speed < 0:  # was moving left
-                                    while pygame.sprite.collide_rect(player, hit): # correction
+                                    while pygame.sprite.collide_rect(player, hit):  # correction
                                         player.rect.centerx += 1
+                                        background.rect.x -= 1
 
                 # position adjustments
-                while (sprite.rect.bottom > ACTUAL_HEIGHT):
-                    if sprite.destructable == True:  # if the obj is destructible and it hits a wall, get rid of it
+                while sprite.rect.bottom > ACTUAL_HEIGHT:
+                    if sprite.destructable:  # if the obj is destructible and it hits a wall, get rid of it
                         Sprites.remove(sprite)
-                    sprite.rect.y = sprite.rect.y - 1
-                while (sprite.rect.top < 0):
-                    if sprite.destructable == True:  # if the obj is destructible and it hits a wall, get rid of it
+                    sprite.rect.y -= 1
+                while sprite.rect.top < 0:
+                    if sprite.destructable:  # if the obj is destructible and it hits a wall, get rid of it
                         Sprites.remove(sprite)
-                    sprite.rect.y = sprite.rect.y + 1
-                while (sprite.rect.right > ACTUAL_WIDTH):
-                    if sprite.destructable == True:  # if the obj is destructible and it hits a wall, get rid of it
+                    sprite.rect.y += 1
+                while sprite.rect.right > ACTUAL_WIDTH:
+                    if sprite.destructable:  # if the obj is destructible and it hits a wall, get rid of it
                         Sprites.remove(sprite)
-                    sprite.rect.x = sprite.rect.x - 1
-                while (sprite.rect.left < 0):
-                    if sprite.destructable == True:  # if the obj is destructible and it hits a wall, get rid of it
+                    sprite.rect.x -= 1
+                while sprite.rect.left < 0:
+                    if sprite.destructable:  # if the obj is destructible and it hits a wall, get rid of it
                         Sprites.remove(sprite)
-                    sprite.rect.x = sprite.rect.x + 1
+                    sprite.rect.x += 1
 
-        #draw stuff
+        # draw stuff
         screen.fill((0, 0, 0))
         screen.blit(background.image, background.rect)
-        camera.update(player) #camera will follow the player
+        camera.update(player)  # camera will follow the player
 
-        #draw everything using blit over the .draw() function (more control with camera)
+        # draw everything using blit over the .draw() function (more control with camera)
         for sprite in Sprites:
             screen.blit(sprite.image, camera.apply(sprite))
 
@@ -131,6 +139,7 @@ def main():
 
         pygame.display.flip()
         timer.tick(60)
+
 
 def complex_camera(camera, target_rect):
     l, t, _, _ = target_rect
@@ -147,7 +156,7 @@ def complex_camera(camera, target_rect):
 
 class Platform(Sprite):
     def __init__(self, x, y):
-        Sprite.__init__(self, "sprite/Dirt.png", x, y, 32, 32)
+        Sprite.__init__(self, "sprite/Square.png", x, y, 32, 32)
 
     def update(self):
         pass
