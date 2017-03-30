@@ -9,8 +9,8 @@ WIN_HEIGHT = 640
 HALF_WIDTH = int(WIN_WIDTH / 2)
 HALF_HEIGHT = int(WIN_HEIGHT / 2)
 DISPLAY = (WIN_WIDTH, WIN_HEIGHT)
-ACTUAL_WIDTH = 1067
-ACTUAL_HEIGHT = 640
+BACKGROUND_WIDTH = 1700
+BACKGROUND_HEIGHT = 640
 
 # Start setting up PyGame
 pygame.init()
@@ -24,17 +24,17 @@ def main():
     Sprites = pygame.sprite.Group()
     platforms = []
     timer = pygame.time.Clock()
-    background = Sprite("sprite/Background.png", 0, 0, ACTUAL_WIDTH, ACTUAL_HEIGHT, 0)
+    background = Sprite("sprite/Background.png", 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, 0)
 
     x = y = 0
     level = [
-        "     PPPPPPPPPPPPPPPPPPPPPPP     ",
-        "     P                     P     ",
-        "     P                     P     ",
-        "     P           PPPPPPPPPPP     ",
-        "     P                     P     ",
-        "     P                     P     ",
-        "     PPPPPPPPPPPPPPPPPPPPPPP     ",]
+        "            PPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+        "            P                            P",
+        "            P                            P",
+        "            P                            P",
+        "            P                            P",
+        "            P                            P",
+        "            PPPPPPPPPPPPPPPPPPPPPPPPPPPPPP"]
 
     # build the level
     for row in level:
@@ -48,7 +48,7 @@ def main():
         x = 0
 
     # create the camera with a complex camera (will autofit to the boundaries of the screen
-    camera = Camera(complex_camera, ACTUAL_WIDTH, ACTUAL_HEIGHT)
+    camera = Camera(complex_camera, BACKGROUND_WIDTH, BACKGROUND_HEIGHT)
 
     # create the player
     player = Sprite("sprite/DisasterPlayer.png", 400, (len(level)*32) - 35*2, 32, 32, 1)
@@ -81,7 +81,7 @@ def main():
                 hitList = pygame.sprite.spritecollide(sprite, Sprites, False)
 
                 # update positions (using pixel-perfect movement)
-                if sprite.rect.bottom <= ACTUAL_HEIGHT and sprite.rect.top >= 0 and sprite.rect.right <= ACTUAL_WIDTH \
+                if sprite.rect.bottom <= BACKGROUND_HEIGHT and sprite.rect.top >= 0 and sprite.rect.right <= BACKGROUND_WIDTH \
                    and sprite.rect.left >= 0:
                     # movement
                     if sprite.identity == 1:
@@ -109,7 +109,7 @@ def main():
                                         background.rect.x -= 1
 
                 # position adjustments
-                while sprite.rect.bottom > ACTUAL_HEIGHT:
+                while sprite.rect.bottom > BACKGROUND_HEIGHT:
                     if sprite.destructable:  # if the obj is destructible and it hits a wall, get rid of it
                         Sprites.remove(sprite)
                     sprite.rect.y -= 1
@@ -117,7 +117,7 @@ def main():
                     if sprite.destructable:  # if the obj is destructible and it hits a wall, get rid of it
                         Sprites.remove(sprite)
                     sprite.rect.y += 1
-                while sprite.rect.right > ACTUAL_WIDTH:
+                while sprite.rect.right > BACKGROUND_WIDTH:
                     if sprite.destructable:  # if the obj is destructible and it hits a wall, get rid of it
                         Sprites.remove(sprite)
                     sprite.rect.x -= 1
