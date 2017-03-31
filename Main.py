@@ -20,7 +20,7 @@ pygame.display.set_caption("STORM!")
 
 def main():
     # variables
-    left = right = False
+    left = right = up = down = False
     Sprites = pygame.sprite.Group()
     platforms = []
     timer = pygame.time.Clock()
@@ -28,13 +28,27 @@ def main():
 
     x = y = 0
     level = [
-        "            PPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
-        "            P                            P",
-        "            P                            P",
-        "            P                            P",
-        "            P                            P",
-        "            P                            P",
-        "            PPPPPPPPPPPPPPPPPPPPPPPPPPPPPP"]
+        "                                           ",
+        "                                           ",
+        "                                           ",
+        "                                           ",
+        "                                  PPPP     ",
+        "                                 P    P    ",
+        "                               PP      PP  ",
+        "                             PPP        P  ",
+        "                             P          P  ",
+        "            P                P          P  ",
+        "            P                P  PPPPPPPPPPP",      #house is alligned
+        "            P                P            P",
+        "            P                P            P",
+        "            P                             P",
+        "            P                             P",
+        "            PPPPPPPPPPPPPPPPPPPPPPPPPPP  PP",
+        "                            P             P",
+        "                            P             P",
+        "                            P             P",
+        "                            PPPPPPPPPPPPPPP"]
+
 
     # build the level
     for row in level:
@@ -51,7 +65,7 @@ def main():
     camera = Camera(complex_camera, BACKGROUND_WIDTH, BACKGROUND_HEIGHT)
 
     # create the player
-    player = Sprite("sprite/DisasterPlayer.png", 400, (len(level)*32) - 35*2, 32, 32, 1)
+    player = Sprite("sprite/DisasterPlayer.png", 420, (len(level)*25.5) - 35*2 - 5, 32, 32, 1)
     Sprites.add(player)
 
     # game time
@@ -66,12 +80,20 @@ def main():
                     left = True
                 if event.key == pygame.K_d:
                     right = True
+                #if event.key == pygame.K_w:
+                #    up = True
+                #if event.key == pygame.K_s:
+                #    down = True
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_d:
                     right = False
                 if event.key == pygame.K_a:
                     left = False
+                #if event.key == pygame.K_w:
+                #    up = False
+                #if event.key == pygame.K_s:
+                #    down = False
 
         spritesToModify = Sprites.sprites()  # get list of sprites
         for sprite in spritesToModify:
@@ -156,7 +178,7 @@ def complex_camera(camera, target_rect):
 
 class Platform(Sprite):
     def __init__(self, x, y):
-        Sprite.__init__(self, "sprite/Square.png", x, y, 32, 32)
+        Sprite.__init__(self, "sprite/invisibleBox.png", x, y, 32, 32)
 
     def update(self):
         pass
