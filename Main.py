@@ -35,16 +35,16 @@ def main():
         "                                  PPPP     ",
         "                                 P    P    ",
         "                               PP      PP  ",
-        "                             PPP        P  ",
+        "                             PPPPPPPPPPPP  ",
         "                             P          P  ",
-        "            P                P          P  ",
-        "            P                P  PPPPPPPPPPP",      #house is alligned
-        "            P                P            P",
-        "            P                P            P",
+        "                             P          P  ",
+        "                             P  PPPPPPPPPPP",      #house is alligned
+        "                             P  PPPPPPPPPPP",
+        "            PPPPPPPPPPPPPPPPPP  PPPPPPPPPPP",
         "            P                             P",
         "            P                             P",
         "            PPPPPPPPPPPPPPPPPPPPPPPPPPP  PP",
-        "                            P             P",
+        "                            PPPPPPPPPPP  PP",
         "                            P             P",
         "                            P             P",
         "                            PPPPPPPPPPPPPPP"]
@@ -65,7 +65,7 @@ def main():
     camera = Camera(complex_camera, BACKGROUND_WIDTH, BACKGROUND_HEIGHT)
 
     # create the player
-    player = Sprite("sprite/DisasterPlayer.png", 420, (len(level)*25.5) - 35*2 - 5, 32, 32, 1)
+    player = Sprite("sprite/DisasterPlayer.png", 415, (len(level)*25.5) - 35*2 - 5, 32, 40, 1)
     Sprites.add(player)
 
     # game time
@@ -80,20 +80,32 @@ def main():
                     left = True
                 if event.key == pygame.K_d:
                     right = True
-                #if event.key == pygame.K_w:
-                #    up = True
-                #if event.key == pygame.K_s:
-                #    down = True
+                if event.key == pygame.K_w:
+                    up = True
+                if event.key == pygame.K_s:
+                    down = True
+                if event.key == pygame.K_a and event.key == pygame.K_w:
+                    left = True
+                    up = False
+                if event.key == pygame.K_a and event.key == pygame.K_s:
+                    left = True
+                    down = False
+                if event.key == pygame.K_d and event.key == pygame.K_w:
+                    right = True
+                    up = False
+                if event.key == pygame.K_d and event.key == pygame.K_s:
+                    right = True
+                    down = False
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_d:
                     right = False
                 if event.key == pygame.K_a:
                     left = False
-                #if event.key == pygame.K_w:
-                #    up = False
-                #if event.key == pygame.K_s:
-                #    down = False
+                if event.key == pygame.K_w:
+                    up = False
+                if event.key == pygame.K_s:
+                    down = False
 
         spritesToModify = Sprites.sprites()  # get list of sprites
         for sprite in spritesToModify:
@@ -107,28 +119,42 @@ def main():
                    and sprite.rect.left >= 0:
                     # movement
                     if sprite.identity == 1:
-                        speed = 0
+                        speedX = 0
+                        speedY = 0
                         if left:
-                            speed += -5
+                            speedX += -5
                         if right:
-                            speed += 5
+                            speedX += 5
+                        if up:
+                            speedY += -5
+                        if down:
+                            speedY += 5
 
-                        sprite.rect.centerx += speed
+                        sprite.rect.centerx += speedX
+                        sprite.rect.centery += speedY
 
                         # moves the background along with the player
-                        background.rect.x -= speed
+                        background.rect.x -= speedX
 
                         # collision handling for player
                         for hit in hitList:
                             if hit.identity == 0:  # a barrier was hit
-                                if speed > 0:  # was moving right
+                                if speedX > 0:  # was moving right
                                     while pygame.sprite.collide_rect(player, hit):  # correction
                                         player.rect.centerx -= 1
                                         background.rect.x += 1
-                                if speed < 0:  # was moving left
+                                if speedX < 0:  # was moving left
                                     while pygame.sprite.collide_rect(player, hit):  # correction
                                         player.rect.centerx += 1
                                         background.rect.x -= 1
+                                if speedY > 0: #down
+                                    while pygame.sprite.collide_rect(player, hit):
+                                        player.rect.centery -= 1
+                                #        background.rect.y -= 1
+                                if speedY < 0: #up
+                                    while pygame.sprite.collide_rect(player, hit):
+                                        player.rect.centery += 1
+                                #        background.rect.y += 1
 
                 # position adjustments
                 while sprite.rect.bottom > BACKGROUND_HEIGHT:
@@ -178,7 +204,7 @@ def complex_camera(camera, target_rect):
 
 class Platform(Sprite):
     def __init__(self, x, y):
-        Sprite.__init__(self, "sprite/invisibleBox.png", x, y, 32, 32)
+        Sprite.__init__(self, "sprite/Square.png", x, y, 32, 32)
 
     def update(self):
         pass
