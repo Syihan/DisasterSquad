@@ -2,7 +2,7 @@ import pygame
 
 class Sprite(pygame.sprite.Sprite):
     destructable = False
-    identity = 0 #0 = barrier of some kind, 1 = player
+    identity = 0 #0 = barrier of some kind, 1 = player, 2 = interactive
 
     def __init__(self, sprite, startx, starty, width, height, identity = 0):
         super().__init__()

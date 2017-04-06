@@ -15,12 +15,13 @@ BACKGROUND_HEIGHT = 640
 # Start setting up PyGame
 pygame.init()
 screen = pygame.display.set_mode(DISPLAY)
-pygame.display.set_caption("STORM!")
+pygame.display.set_caption("Maelstrom")
 
 
 def main():
     # variables
     left = right = up = down = False
+    floor = 1
     Sprites = pygame.sprite.Group()
     platforms = []
     timer = pygame.time.Clock()
@@ -32,22 +33,22 @@ def main():
         "                                           ",
         "                                           ",
         "                                           ",
-        "                                  PPPP     ",
-        "                                 P    P    ",
-        "                               PP      PP  ",
-        "                             PPPPPPPPPPPP  ",
+        "                                           ",
+        "                                           ",
+        "                                           ",
+        "                                           ",
         "                             P          P  ",
         "                             P          P  ",
-        "                             P  PPPPPPPPPPP",      #house is alligned
-        "                             P  PPPPPPPPPPP",
-        "            PPPPPPPPPPPPPPPPPP  PPPPPPPPPPP",
-        "            P                             P",
-        "            P                             P",
-        "            PPPPPPPPPPPPPPPPPPPPPPPPPPP  PP",
-        "                            PPPPPPPPPPP  PP",
-        "                            P             P",
-        "                            P             P",
-        "                            PPPPPPPPPPPPPPP"]
+        "                             P          P  ",      #house is aligned
+        "                             P           P ",
+        "                             P           P ",
+        "                                         P ",
+        "            P                            P ",
+        "                             P           P ",
+        "                             P           P ",
+        "                             P           P ",
+        "                             P           P ",
+        "                                           "]
 
 
     # build the level
@@ -65,8 +66,10 @@ def main():
     camera = Camera(complex_camera, BACKGROUND_WIDTH, BACKGROUND_HEIGHT)
 
     # create the player
-    player = Sprite("sprite/DisasterPlayer.png", 415, (len(level)*25.5) - 35*2 - 5, 32, 40, 1)
+    player = Sprite("sprite/DisasterPlayer.png", 415, (len(level)*25.5) - 35*2 - 10, 32, 40, 1)
     Sprites.add(player)
+    #ladderIndicator = Sprite("sprite/Indicator.png", 1240, (len(level)*25.5) - 35*2 - 5, 45, 45, 0)
+    #Sprites.add(ladderIndicator)
 
     # game time
     while True:
@@ -125,13 +128,29 @@ def main():
                             speedX += -5
                         if right:
                             speedX += 5
+                        # movement up the ladders
                         if up:
-                            speedY += -5
+                            # going upstairs
+                            if floor == 1 and sprite.rect.centerx > 985 and sprite.rect.centerx < 1015:
+                                sprite.rect.centery -= 140
+                                floor = 2
+                            # going to first floor
+                            if floor == 0 and sprite.rect.centerx > 1245 and sprite.rect.centerx < 1275:
+                                sprite.rect.centery -= 140
+                                floor = 1
+                        # movement down the ladders
                         if down:
-                            speedY += 5
+                            # going to basement
+                            if floor == 1 and sprite.rect.centerx > 1245 and sprite.rect.centerx < 1275:
+                                sprite.rect.centery += 140
+                                floor = 0
+                            # going to the first floor
+                            if floor == 2 and sprite.rect.centerx > 985 and sprite.rect.centerx < 1015:
+                                sprite.rect.centery += 140
+                                floor = 1
 
+                        # moves the player
                         sprite.rect.centerx += speedX
-                        sprite.rect.centery += speedY
 
                         # moves the background along with the player
                         background.rect.x -= speedX
@@ -160,11 +179,11 @@ def main():
                 while sprite.rect.bottom > BACKGROUND_HEIGHT:
                     if sprite.destructable:  # if the obj is destructible and it hits a wall, get rid of it
                         Sprites.remove(sprite)
-                    sprite.rect.y -= 1
+                    # sprite.rect.y -= 1
                 while sprite.rect.top < 0:
                     if sprite.destructable:  # if the obj is destructible and it hits a wall, get rid of it
                         Sprites.remove(sprite)
-                    sprite.rect.y += 1
+                    # sprite.rect.y += 1
                 while sprite.rect.right > BACKGROUND_WIDTH:
                     if sprite.destructable:  # if the obj is destructible and it hits a wall, get rid of it
                         Sprites.remove(sprite)
@@ -204,7 +223,7 @@ def complex_camera(camera, target_rect):
 
 class Platform(Sprite):
     def __init__(self, x, y):
-        Sprite.__init__(self, "sprite/Square.png", x, y, 32, 32)
+        Sprite.__init__(self, "sprite/Blank.png", x, y, 32, 32)
 
     def update(self):
         pass
