@@ -7,7 +7,7 @@ class Sprite(pygame.sprite.Sprite):
     def __init__(self, sprite, startx, starty, width, height, identity = 0):
         super().__init__()
 
-        self.identity = identity # 0 = barrier, 1 = player
+        self.identity = identity # 0 = barrier, 1 = player, 2 = player's "skin"
 
         self.width = width
         self.height = height

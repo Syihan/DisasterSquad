@@ -2,6 +2,7 @@ import pygame
 import sys
 from Camera import Camera
 from Sprite import *
+from SpriteSheet import SpriteSheet
 
 # Constants
 WIN_WIDTH = 800
@@ -71,8 +72,12 @@ def main():
     camera = Camera(complex_camera, BACKGROUND_WIDTH, BACKGROUND_HEIGHT)
 
     # create the player
-    player = Sprite("sprite/DisasterPlayer.png", 445, (len(level)*25.5) - 35*2 - 10, 32, 40, 1)
+    playerSheet = SpriteSheet("sprite/randi_sheet.png")
+    playerSkin = Sprite("sprite/Blank.png", 0, 0, 0, 0, 2)
+    player = Sprite("sprite/Blank.png", 445, (len(level)*25.5) - 35*2 - 10, 32, 40, 1)
     Sprites.add(player)
+    Sprites.add(playerSkin)
+
     #ladderIndicator = Sprite("sprite/Indicator.png", 1240, (len(level)*25.5) - 35*2 - 5, 45, 45, 0)
     #Sprites.add(ladderIndicator)
 
@@ -131,6 +136,10 @@ def main():
                 # get list of obj's colliding with current sprite
                 hitList = pygame.sprite.spritecollide(sprite, Sprites, False)
 
+                playerSkin.image = playerSheet.get_image(0, 0, round(222 / 3), 123)
+                playerSkin.image = pygame.transform.smoothscale(playerSkin.image, (round(float(player.rect.width * 1.3)), player.rect.height))
+                playerSkin.rect = playerSkin.image.get_rect()
+
                 # update positions (using pixel-perfect movement)
                 if sprite.rect.bottom <= BACKGROUND_HEIGHT and sprite.rect.top >= 0 and sprite.rect.right <= BACKGROUND_WIDTH \
                    and sprite.rect.left >= 0:
@@ -140,9 +149,13 @@ def main():
                         speedY = 0
                         # moving left
                         if left:
+                            playerSkin.image = playerSheet.get_image(round(222 / 3)*2, 0, round(222 / 3), 123)
+                            playerSkin.image = pygame.transform.smoothscale(playerSkin.image, (round(float(player.rect.width * 1.3)), player.rect.height))
                             speedX += -5
                         # moving right
                         if right:
+                            playerSkin.image = playerSheet.get_image(round(222 / 3), 0, round(222 / 3), 123)
+                            playerSkin.image = pygame.transform.smoothscale(playerSkin.image, (round(float(player.rect.width * 1.3)), player.rect.height))
                             speedX += 5
                         # movement up the ladders
                         if up:
@@ -167,6 +180,8 @@ def main():
 
                         # moves the player
                         sprite.rect.centerx += speedX
+                        playerSkin.rect.centerx = sprite.rect.centerx
+                        playerSkin.rect.centery = sprite.rect.centery
 
                         # moves the background along with the player
                         background.rect.x -= speedX
