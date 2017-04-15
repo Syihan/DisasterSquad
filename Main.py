@@ -77,6 +77,7 @@ def main():
     player = Sprite("sprite/Blank.png", 445, (len(level)*25.5) - 35*2 - 10, 32, 40, 1)
     Sprites.add(player)
     Sprites.add(playerSkin)
+    playerHealth = 5
 
     #ladderIndicator = Sprite("sprite/Indicator.png", 1240, (len(level)*25.5) - 35*2 - 5, 45, 45, 0)
     #Sprites.add(ladderIndicator)
@@ -225,10 +226,55 @@ def main():
         for sprite in Sprites:
             screen.blit(sprite.image, camera.apply(sprite))
 
+        #hp display
+        HeartDisplay(playerHealth)
+
         screen.blit(player.image, camera.apply(player))
 
         pygame.display.flip()
         timer.tick(60)
+
+def HeartDisplay(playerHP):
+    # Health Display If Chain
+    # heart 1
+    if (playerHP > 0):
+        screen.blit(pygame.transform.scale(pygame.image.load("images/heart_red.png"), (32, 32)),
+                    (32, 10, 32, 32))
+    else:
+        screen.blit(pygame.transform.scale(pygame.image.load("images/heart_black.png"), (32, 32)),
+                    (32, 10, 32, 32))
+
+    # heart 2
+    if (playerHP > 1):
+        screen.blit(pygame.transform.scale(pygame.image.load("images/heart_red.png"), (32, 32)),
+                    (32 * 2 + 5, 10, 32, 32))
+    else:
+        screen.blit(pygame.transform.scale(pygame.image.load("images/heart_black.png"), (32, 32)),
+                    (32 * 2 + 5, 10, 32, 32))
+
+    # heart 3
+    if (playerHP > 2):
+        screen.blit(pygame.transform.scale(pygame.image.load("images/heart_red.png"), (32, 32)),
+                    (32 * 3 + 10, 10, 32, 32))
+    else:
+        screen.blit(pygame.transform.scale(pygame.image.load("images/heart_black.png"), (32, 32)),
+                    (32 * 3 + 10, 10, 32, 32))
+
+    # heart 4
+    if (playerHP > 3):
+        screen.blit(pygame.transform.scale(pygame.image.load("images/heart_red.png"), (32, 32)),
+                    (32 * 4 + 15, 10, 32, 32))
+    else:
+        screen.blit(pygame.transform.scale(pygame.image.load("images/heart_black.png"), (32, 32)),
+                    (32 * 4 + 15, 10, 32, 32))
+
+    # heart 5
+    if (playerHP > 4):
+        screen.blit(pygame.transform.scale(pygame.image.load("images/heart_red.png"), (32, 32)),
+                    (32 * 5 + 20, 10, 32, 32))
+    else:
+        screen.blit(pygame.transform.scale(pygame.image.load("images/heart_black.png"), (32, 32)),
+                    (32 * 5 + 20, 10, 32, 32))
 
 def phase1():
     phase1 = True
