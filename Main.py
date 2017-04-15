@@ -29,6 +29,11 @@ def main():
     timer = pygame.time.Clock()       # framerate manager
     background = Sprite("images/full background.png", 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, 0)  # background image
 
+    # phase 1 variables
+    phase_one = False
+    thunder = pygame.mixer.Sound("audio/heavy_rain_with_thunder.wav")
+    water = Sprite("sprite/water.png", 0, 400, 1700, 240, 3)
+
     # load and play the music
     pygame.mixer.pre_init(44100, 16, 2, 4096) # frequency, size, channels, buffersize
     pygame.mixer.music.load("audio/background_music.mp3")
@@ -116,7 +121,8 @@ def main():
                     down = False
                 # Phase 1 is triggered
                 if event.key == pygame.K_1:
-                    phase1()
+                    phase_one = True
+
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_d:
                     right = False
@@ -146,7 +152,6 @@ def main():
                     # movement
                     if sprite.identity == 1:
                         speedX = 0
-                        speedY = 0
                         # moving left
                         if left:
                             playerSkin.image = playerSheet.get_image(round(222 / 3)*2, 0, round(222 / 3), 123)
@@ -197,6 +202,15 @@ def main():
                                     while pygame.sprite.collide_rect(player, hit):  # correction
                                         player.rect.centerx += 1
                                         background.rect.x -= 1
+            # Deals with objects not including the player or the barriers
+            if sprite.identity == 3:
+                # get list of obj's colliding with current sprite
+                hitList = pygame.sprite.spritecollide(sprite, Sprites, False)
+                # collision handling for object
+                for hit in hitList:
+                    if hit.identity == 1:  # the player was hit
+                        # TODO: Figure out how to diminish player health
+                        player.rect.centery -= 10
 
                 # position adjustments
                 while sprite.rect.bottom > BACKGROUND_HEIGHT:
@@ -216,6 +230,14 @@ def main():
                         Sprites.remove(sprite)
                     sprite.rect.x += 1
 
+        if phase_one:
+            thunder.play()
+            Sprites.add(water)
+            if water.rect.centery < 400:
+                water.rect.centery -= 10
+                phase_one = False
+
+
         # draw stuff
         screen.fill((0, 0, 0))
         screen.blit(background.image, background.rect) # fills screen with background
@@ -230,26 +252,17 @@ def main():
         pygame.display.flip()
         timer.tick(60)
 
+
 def phase1():
-    phase1 = True
     thunder = pygame.mixer.Sound("audio/heavy_rain_with_thunder.wav")
     thunder.play()
-    cloudX = 0
-    waterY = 300
-    #cloud0 = Sprite("sprite/cloud0.png", cloudX, 20, 1000, 200, 0)
-    #cloud1 = Sprite("sprite/cloud1.png", BACKGROUND_WIDTH-cloudX, 30, 1000, 200, 0)
-    #cloud2 = Sprite("sprite/cloud2.png", cloudX, 40, 1000, 200, 0)
-    water = Sprite("sprite/water2.png", 0, 0, 300, 300)
-    #Sprites.add(cloud0)
-    #Sprites.add(cloud1)
-    #Sprites.add(cloud2)
+    water = Sprite("sprite/water.png", 0, 400, 1700, 240, 3)
     Sprites.add(water)
 
-    while phase1:
-        if water.rect.centery < WIN_HEIGHT/2:
-            water.rect.centery -= 10
-        else:
-            phase1 = False
+    # if water.rect.centery < WIN_HEIGHT/2:
+    #     water.rect.centery -= 10
+    # else:
+    #     phase_one = False
 
 
 def complex_camera(camera, target_rect):
