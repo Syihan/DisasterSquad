@@ -2,12 +2,12 @@ import pygame
 
 class Sprite(pygame.sprite.Sprite):
     destructable = False
-    identity = 0 #0 = barrier of some kind, 1 = player
+    identity = 0 #0 = barrier of some kind, 1 = player, 2 = interactive
 
     def __init__(self, sprite, startx, starty, width, height, identity = 0):
         super().__init__()
 
-        self.identity = identity # 0 = barrier, 1 = player
+        self.identity = identity # 0 = barrier, 1 = player, 2 = player's "skin"
 
         self.width = width
         self.height = height
