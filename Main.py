@@ -31,19 +31,30 @@ def main():
     platforms = []                    # platform manager
     timer = pygame.time.Clock()       # framerate manager
     background = Sprite("images/full background.png", 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, 0)  # background image
+    health_indicator = Sprite("sprite/Indicator.png", 0, WIN_HEIGHT, 0, 0, 3)
+    Sprites.add(health_indicator)
 
     # phase 1 variables
     phase_one = False
     weather_sounds = pygame.mixer.Channel(2)
+    radio_sounds = pygame.mixer.Channel(3)
     thunder = pygame.mixer.Sound("audio/heavy_rain_with_thunder.wav")
+    phase1_warning = pygame.mixer.Sound("audio/phase1_warning.wav")
+    stillwater = pygame.mixer.Sound("audio/flood.wav")
+    zap = pygame.mixer.Sound("audio/zap_damage.wav")
     water = Sprite("sprite/water.png", 0, WIN_HEIGHT, 1700, 0, 3)
     Sprites.add(water)
-    now_time = last_time = pygame.time.get_ticks()
+    phase1_wait_now = phase1_wait_then = pygame.time.get_ticks()
+    water_wait_now = water_wait_then = pygame.time.get_ticks()
+    warning_wait_now = warning_wait_then = pygame.time.get_ticks()
+    zap_wait_now = zap_wait_then = pygame.time.get_ticks()
+    warning_over = False
+    flood_over = False
 
     # load and play the music
     pygame.mixer.pre_init(44100, 16, 2, 4096) # frequency, size, channels, buffersize
     pygame.mixer.music.load("audio/background_music.mp3")
-    # pygame.mixer.music.play(-1)
+    pygame.mixer.music.play(-1)
 
     # build the level
     x = y = 0
@@ -56,17 +67,17 @@ def main():
         "                                            ",
         "                                            ",
         "                                            ",
-        "                              P          P  ",
+        "                              PP        PP  ",
         "                              P          P  ",
         "                              P          P  ",      # house is aligned
-        "                              P           P ",
-        "                              PP         PP ",
-        "             P                            P ",
-        "             P                            P ",
-        "                             PP          PP ",
-        "                             P            P ",
-        "                             P            P ",
-        "                             P            P ",
+        "                              P          P  ",
+        "             PPPPPPPPPPPPPPPPPPP  PPPPPPPPP ",
+        "             P                           PP ",
+        "             P                           PP ",
+        "                             PPPPPPPPP   PP ",
+        "                             P           PP ",
+        "                             P           PP ",
+        "                             P           PP ",
         "                                            "]
 
     for row in level:
@@ -208,51 +219,98 @@ def main():
                                     while pygame.sprite.collide_rect(player, hit):  # correction
                                         player.rect.centerx += 1
                                         background.rect.x -= 1
-            # Deals with objects not including the player or the barriers
-            if sprite.identity == 3:
-                # get list of obj's colliding with current sprite
-                hitList = pygame.sprite.spritecollide(sprite, Sprites, False)
-                # collision handling for object
-                for hit in hitList:
-                    if hit.identity == 1:  # the player was hit
-                        # TODO: Figure out how to diminish player health
-                        player.rect.centery -= 10
+                            # elif hit.identity == 3:
+                            #     print("WATER!")
+                            # if hit.identity == 3:
+                            #     print("The player's hit the water")
+                            # if hit.identity == 3: # an object was hit
+                            #     player.rect.centery -= 1
+                            #     print("The player's hit the water")
+            # # Deals with objects not including the player or the barriers
 
-                # position adjustments
-                while sprite.rect.bottom > BACKGROUND_HEIGHT:
-                    if sprite.destructable:  # if the obj is destructible and it hits a wall, get rid of it
-                        Sprites.remove(sprite)
-                    # sprite.rect.y -= 1
-                while sprite.rect.top < 0:
-                    if sprite.destructable:  # if the obj is destructible and it hits a wall, get rid of it
-                        Sprites.remove(sprite)
-                    # sprite.rect.y += 1
-                while sprite.rect.right > BACKGROUND_WIDTH:
-                    if sprite.destructable:  # if the obj is destructible and it hits a wall, get rid of it
-                        Sprites.remove(sprite)
-                    sprite.rect.x -= 1
-                while sprite.rect.left < 0:
-                    if sprite.destructable:  # if the obj is destructible and it hits a wall, get rid of it
-                        Sprites.remove(sprite)
-                    sprite.rect.x += 1
+            # if sprite.identity == 3:
+            #     # get list of obj's colliding with current sprite
+            #     hitList = pygame.sprite.spritecollide(sprite, Sprites, False)
+            #     # collision handling for object
+            #     for hit in hitList:
+            #         if hit.identity == 1 or hit.identity == 2:  # the player was hit
+            #             # TODO: Figure out how to diminish player health
+            #             hit.rect.centery -= 1
+            #
+            #     # position adjustments
+            #     while sprite.rect.bottom > BACKGROUND_HEIGHT:
+            #         if sprite.destructable:  # if the obj is destructible and it hits a wall, get rid of it
+            #             Sprites.remove(sprite)
+            #         # sprite.rect.y -= 1
+            #     while sprite.rect.top < 0:
+            #         if sprite.destructable:  # if the obj is destructible and it hits a wall, get rid of it
+            #             Sprites.remove(sprite)
+            #         # sprite.rect.y += 1
+            #     while sprite.rect.right > BACKGROUND_WIDTH:
+            #         if sprite.destructable:  # if the obj is destructible and it hits a wall, get rid of it
+            #             Sprites.remove(sprite)
+            #         sprite.rect.x -= 1
+            #     while sprite.rect.left < 0:
+            #         if sprite.destructable:  # if the obj is destructible and it hits a wall, get rid of it
+            #             Sprites.remove(sprite)
+            #         sprite.rect.x += 1
 
         # Executes Phase 1 if triggered
         if phase_one:
-            now_time = pygame.time.get_ticks()
-            # Plays the thunder with rain sound effect
-            if not weather_sounds.get_busy():
-                weather_sounds.play(thunder)
+            water_wait_now = zap_wait_now = pygame.time.get_ticks()
 
-            # Moves the waterline progressively upward
-            if water.rect.y > WATER_LINE:
-                if now_time - last_time > 200:
-                    water.rect.y -= 1
-                    water.height += 1
-                    water.image = pygame.transform.scale(water.image, (1700, water.height))
-                    last_time = now_time
+            # Plays the thunder with rain sound effect
+            if not weather_sounds.get_busy() and not flood_over:
+                    weather_sounds.play(thunder)
+
+            # Plays the radio warning
+            if not radio_sounds.get_busy() and not warning_over and not flood_over:
+                warning_wait_then = pygame.time.get_ticks()
+                radio_sounds.play(phase1_warning)
+
+            warning_wait_now = pygame.time.get_ticks()
+
+            # Waits for the audio to finish
+            if warning_wait_now - warning_wait_then >= 200:
+                warning_over = True
+
+            # As soon as the radio is finished, begin the flood
+            if not radio_sounds.get_busy() and warning_over and not flood_over:
+                # Moves the waterline progressively upward
+                if water.rect.y > WATER_LINE:
+                    if water_wait_now - water_wait_then > 100:
+                        water.rect.y -= 1
+                        water.height += 1
+                        water.image = pygame.transform.scale(water.image, (1700, water.height))
+                        water.rect = water.rect.clip(pygame.Rect(0, 0, 1700, water.height))
+                        water_wait_then = water_wait_now
+                else:
+                    weather_sounds.fadeout(3000)
+                    phase1_wait_then = pygame.time.get_ticks()
+                    flood_over = True
+
+            # If the player reaches below the waterline, he will become damaged
+            if water.rect.y < player.rect.bottom < WIN_HEIGHT:
+                health_indicator.rect.y = 0
+                health_indicator.image = pygame.transform.scale(health_indicator.image,
+                                                                (BACKGROUND_WIDTH, BACKGROUND_HEIGHT))
+                if zap_wait_now - zap_wait_then > 1000:
+                    zap.play()
+                    zap_wait_then = zap_wait_now
             else:
-                weather_sounds.fadeout(3000)
-                phase_one = False
+                health_indicator.rect.y = WIN_HEIGHT
+
+            # Wait for 10 seconds, then wait for the water to recede
+            if phase1_wait_now - phase1_wait_then > 10000 and flood_over:
+                if water.rect.y < 640:
+                    if water_wait_now - water_wait_then > 100:
+                        water.rect.y += 1
+                        water.height -= 1
+                        water_wait_then = water_wait_now
+                else:
+                    phase_one = False
+
+            phase1_wait_now = pygame.time.get_ticks()
 
         # draw stuff
         screen.fill((0, 0, 0))
