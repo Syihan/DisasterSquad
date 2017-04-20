@@ -99,6 +99,7 @@ def main():
     player = Sprite("sprite/Blank.png", 445, (len(level)*25.5) - 35*2 - 10, 32, 40, 1)
     Sprites.add(player)
     Sprites.add(playerSkin)
+    playerHealth = 5
 
     #ladderIndicator = Sprite("sprite/Indicator.png", 1240, (len(level)*25.5) - 35*2 - 5, 45, 45, 0)
     #Sprites.add(ladderIndicator)
@@ -219,14 +220,6 @@ def main():
                                     while pygame.sprite.collide_rect(player, hit):  # correction
                                         player.rect.centerx += 1
                                         background.rect.x -= 1
-                            # elif hit.identity == 3:
-                            #     print("WATER!")
-                            # if hit.identity == 3:
-                            #     print("The player's hit the water")
-                            # if hit.identity == 3: # an object was hit
-                            #     player.rect.centery -= 1
-                            #     print("The player's hit the water")
-            # # Deals with objects not including the player or the barriers
 
             # if sprite.identity == 3:
             #     # get list of obj's colliding with current sprite
@@ -321,10 +314,76 @@ def main():
         for sprite in Sprites:
             screen.blit(sprite.image, camera.apply(sprite))
 
+        #hp display
+        HeartDisplay(playerHealth)
+
         screen.blit(player.image, camera.apply(player))
 
         pygame.display.flip()
         timer.tick(60)
+
+def HeartDisplay(playerHP):
+    # Health Display If Chain
+    # heart 1
+    if (playerHP > 0):
+        screen.blit(pygame.transform.scale(pygame.image.load("images/heart_red.png"), (32, 32)),
+                    (32, 10, 32, 32))
+    else:
+        screen.blit(pygame.transform.scale(pygame.image.load("images/heart_black.png"), (32, 32)),
+                    (32, 10, 32, 32))
+
+    # heart 2
+    if (playerHP > 1):
+        screen.blit(pygame.transform.scale(pygame.image.load("images/heart_red.png"), (32, 32)),
+                    (32 * 2 + 5, 10, 32, 32))
+    else:
+        screen.blit(pygame.transform.scale(pygame.image.load("images/heart_black.png"), (32, 32)),
+                    (32 * 2 + 5, 10, 32, 32))
+
+    # heart 3
+    if (playerHP > 2):
+        screen.blit(pygame.transform.scale(pygame.image.load("images/heart_red.png"), (32, 32)),
+                    (32 * 3 + 10, 10, 32, 32))
+    else:
+        screen.blit(pygame.transform.scale(pygame.image.load("images/heart_black.png"), (32, 32)),
+                    (32 * 3 + 10, 10, 32, 32))
+
+    # heart 4
+    if (playerHP > 3):
+        screen.blit(pygame.transform.scale(pygame.image.load("images/heart_red.png"), (32, 32)),
+                    (32 * 4 + 15, 10, 32, 32))
+    else:
+        screen.blit(pygame.transform.scale(pygame.image.load("images/heart_black.png"), (32, 32)),
+                    (32 * 4 + 15, 10, 32, 32))
+
+    # heart 5
+    if (playerHP > 4):
+        screen.blit(pygame.transform.scale(pygame.image.load("images/heart_red.png"), (32, 32)),
+                    (32 * 5 + 20, 10, 32, 32))
+    else:
+        screen.blit(pygame.transform.scale(pygame.image.load("images/heart_black.png"), (32, 32)),
+                    (32 * 5 + 20, 10, 32, 32))
+
+def phase1():
+    phase1 = True
+    thunder = pygame.mixer.Sound("audio/heavy_rain_with_thunder.wav")
+    thunder.play()
+    cloudX = 0
+    waterY = 300
+    #cloud0 = Sprite("sprite/cloud0.png", cloudX, 20, 1000, 200, 0)
+    #cloud1 = Sprite("sprite/cloud1.png", BACKGROUND_WIDTH-cloudX, 30, 1000, 200, 0)
+    #cloud2 = Sprite("sprite/cloud2.png", cloudX, 40, 1000, 200, 0)
+    water = Sprite("sprite/water2.png", 0, 0, 300, 300)
+    #Sprites.add(cloud0)
+    #Sprites.add(cloud1)
+    #Sprites.add(cloud2)
+    Sprites.add(water)
+
+    while phase1:
+        if water.rect.centery < WIN_HEIGHT/2:
+            water.rect.centery -= 10
+        else:
+            phase1 = False
 
 
 def complex_camera(camera, target_rect):
