@@ -259,12 +259,12 @@ def main():
             # Plays the radio warning
             if not radio_sounds.get_busy() and not warning_over and not flood_over:
                 warning_wait_then = pygame.time.get_ticks()
-                radio_sounds.play(phase1_warning)
+                # radio_sounds.play(phase1_warning)
 
             warning_wait_now = pygame.time.get_ticks()
 
             # Waits for the audio to finish
-            if warning_wait_now - warning_wait_then >= 200:
+            if warning_wait_now - warning_wait_then >= 00:
                 warning_over = True
 
             # As soon as the radio is finished, begin the flood
@@ -290,6 +290,7 @@ def main():
                 if zap_wait_now - zap_wait_then > 1000:
                     zap.play()
                     zap_wait_then = zap_wait_now
+                    playerHealth -= 1
             else:
                 health_indicator.rect.y = WIN_HEIGHT
 
