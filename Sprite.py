@@ -22,7 +22,7 @@ class Sprite(pygame.sprite.Sprite):
         self.rect.topleft = [startx, starty]
 
         #scale the image down to a manageable size
-        self.image = pygame.transform.smoothscale(self.image, (width, height))
+        # self.image = pygame.transform.smoothscale(self.image, (width, height))
 
         #scale hitbox to new size
         self.rect = self.rect.clip(pygame.Rect(startx, starty, width, height))

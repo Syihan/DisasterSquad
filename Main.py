@@ -13,6 +13,9 @@ DISPLAY = (WIN_WIDTH, WIN_HEIGHT)
 BACKGROUND_WIDTH = 1700
 BACKGROUND_HEIGHT = 640
 
+# Sprite Constants
+WATER_LINE = 400
+
 # PyGame setup
 pygame.init()
 screen = pygame.display.set_mode(DISPLAY)
@@ -31,13 +34,16 @@ def main():
 
     # phase 1 variables
     phase_one = False
+    weather_sounds = pygame.mixer.Channel(2)
     thunder = pygame.mixer.Sound("audio/heavy_rain_with_thunder.wav")
-    water = Sprite("sprite/water.png", 0, 400, 1700, 240, 3)
+    water = Sprite("sprite/water.png", 0, WIN_HEIGHT, 1700, 0, 3)
+    Sprites.add(water)
+    now_time = last_time = pygame.time.get_ticks()
 
     # load and play the music
     pygame.mixer.pre_init(44100, 16, 2, 4096) # frequency, size, channels, buffersize
     pygame.mixer.music.load("audio/background_music.mp3")
-    pygame.mixer.music.play(-1)
+    # pygame.mixer.music.play(-1)
 
     # build the level
     x = y = 0
@@ -61,7 +67,7 @@ def main():
         "                             P            P ",
         "                             P            P ",
         "                             P            P ",
-        "                                           "]
+        "                                            "]
 
     for row in level:
         for col in row:
@@ -72,6 +78,9 @@ def main():
             x += 32
         y += 32
         x = 0
+
+    # adds the water
+    # Sprites.add(water)
 
     # create the camera with a complex camera (will autofit to the boundaries of the screen
     camera = Camera(complex_camera, BACKGROUND_WIDTH, BACKGROUND_HEIGHT)
@@ -166,21 +175,21 @@ def main():
                         if up:
                             # going upstairs
                             if floor == 1 and 1010 < sprite.rect.centerx < 1040:
-                                sprite.rect.centery -= 140
+                                sprite.rect.centery = 310
                                 floor = 2
                             # going to first floor
                             if floor == 0 and 1275 < sprite.rect.centerx < 1305:
-                                sprite.rect.centery -= 140
+                                sprite.rect.centery = 450
                                 floor = 1
                         # movement down the ladders
                         if down:
                             # going to basement
                             if floor == 1 and 1275 < sprite.rect.centerx < 1305:
-                                sprite.rect.centery += 140
+                                sprite.rect.centery = 590
                                 floor = 0
                             # going to the first floor
                             if floor == 2 and 1010 < sprite.rect.centerx < 1040:
-                                sprite.rect.centery += 140
+                                sprite.rect.centery = 450
                                 floor = 1
 
                         # moves the player
@@ -230,17 +239,27 @@ def main():
                         Sprites.remove(sprite)
                     sprite.rect.x += 1
 
+        # Executes Phase 1 if triggered
         if phase_one:
-            thunder.play()
-            Sprites.add(water)
-            if water.rect.centery < 400:
-                water.rect.centery -= 10
-                phase_one = False
+            now_time = pygame.time.get_ticks()
+            # Plays the thunder with rain sound effect
+            if not weather_sounds.get_busy():
+                weather_sounds.play(thunder)
 
+            # Moves the waterline progressively upward
+            if water.rect.y > WATER_LINE:
+                if now_time - last_time > 200:
+                    water.rect.y -= 1
+                    water.height += 1
+                    water.image = pygame.transform.scale(water.image, (1700, water.height))
+                    last_time = now_time
+            else:
+                weather_sounds.fadeout(3000)
+                phase_one = False
 
         # draw stuff
         screen.fill((0, 0, 0))
-        screen.blit(background.image, background.rect) # fills screen with background
+        screen.blit(background.image, background.rect)  # fills screen with background
         camera.update(player)  # camera will follow the player
 
         # draw everything using blit over the .draw() function (more control with camera)
@@ -251,18 +270,6 @@ def main():
 
         pygame.display.flip()
         timer.tick(60)
-
-
-def phase1():
-    thunder = pygame.mixer.Sound("audio/heavy_rain_with_thunder.wav")
-    thunder.play()
-    water = Sprite("sprite/water.png", 0, 400, 1700, 240, 3)
-    Sprites.add(water)
-
-    # if water.rect.centery < WIN_HEIGHT/2:
-    #     water.rect.centery -= 10
-    # else:
-    #     phase_one = False
 
 
 def complex_camera(camera, target_rect):
