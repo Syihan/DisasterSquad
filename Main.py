@@ -60,10 +60,10 @@ def main():
         "                              P          P  ",
         "                              P          P  ",      # house is aligned
         "                              P           P ",
-        "                              P           P ",
-        "                                          P ",
+        "                              PP         PP ",
         "             P                            P ",
-        "                             P            P ",
+        "             P                            P ",
+        "                             PP          PP ",
         "                             P            P ",
         "                             P            P ",
         "                             P            P ",
@@ -78,9 +78,6 @@ def main():
             x += 32
         y += 32
         x = 0
-
-    # adds the water
-    # Sprites.add(water)
 
     # create the camera with a complex camera (will autofit to the boundaries of the screen
     camera = Camera(complex_camera, BACKGROUND_WIDTH, BACKGROUND_HEIGHT)
