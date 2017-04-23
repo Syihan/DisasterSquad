@@ -3,6 +3,7 @@ import sys
 from Camera import Camera
 from Sprite import *
 from SpriteSheet import SpriteSheet
+import StoreMenu
 
 # Constants
 WIN_WIDTH = 800
@@ -31,8 +32,8 @@ def main():
 
     # load and play the music
     pygame.mixer.pre_init(44100, 16, 2, 4096) # frequency, size, channels, buffersize
-    pygame.mixer.music.load("audio/background_music.mp3")
-    pygame.mixer.music.play(-1)
+    # pygame.mixer.music.load("audio/background_music.mp3")
+    # pygame.mixer.music.play(-1)
 
     # build the level
     x = y = 0
@@ -118,6 +119,8 @@ def main():
                 # Phase 1 is triggered
                 if event.key == pygame.K_1:
                     phase1()
+                if event.key == pygame.K_b:
+                    openStore()
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_d:
                     right = False
@@ -275,6 +278,9 @@ def HeartDisplay(playerHP):
     else:
         screen.blit(pygame.transform.scale(pygame.image.load("images/heart_black.png"), (32, 32)),
                     (32 * 5 + 20, 10, 32, 32))
+
+def openStore():
+
 
 def phase1():
     phase1 = True
