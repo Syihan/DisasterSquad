@@ -4,6 +4,7 @@ from Camera import Camera
 from Sprite import *
 from SpriteSheet import SpriteSheet
 import StoreMenu
+import Inventory
 
 # Constants
 WIN_WIDTH = 800
@@ -22,6 +23,27 @@ pygame.display.set_caption("Maelstrom")
 # Global variables
 Sprites = pygame.sprite.Group()   # sprites manager
 
+EXTINGUISHER = 0;
+BOOTS = 1;
+AID = 2;
+
+
+#todo implementations for these
+def equip_extinguisher():
+    ()
+
+def equip_boots():
+    ()
+
+def use_aid():
+    ()
+
+allItems = {
+    EXTINGUISHER: equip_extinguisher(),
+    BOOTS: equip_boots(),
+    AID: use_aid()
+}
+
 def main():
     # variables
     left = right = up = down = False  # movement variables
@@ -29,6 +51,7 @@ def main():
     platforms = []                    # platform manager
     timer = pygame.time.Clock()       # framerate manager
     background = Sprite("images/full background.png", 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, 0)  # background image
+    equippedItem = -1;
 
     # load and play the music
     pygame.mixer.pre_init(44100, 16, 2, 4096) # frequency, size, channels, buffersize
@@ -120,7 +143,12 @@ def main():
                 if event.key == pygame.K_1:
                     phase1()
                 if event.key == pygame.K_b:
-                    openStore()
+                    Inventory.addItems(StoreMenu.openMenu())
+                if event.key == pygame.K_i:
+                    #returns number key in itemDict if an item equipped, or -1 if cancelled before equipping
+                    equippedItem = Inventory.openInventory()
+                    if equippedItem != -1:
+                        allItems[equippedItem]
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_d:
                     right = False
@@ -278,8 +306,6 @@ def HeartDisplay(playerHP):
     else:
         screen.blit(pygame.transform.scale(pygame.image.load("images/heart_black.png"), (32, 32)),
                     (32 * 5 + 20, 10, 32, 32))
-
-def openStore():
 
 
 def phase1():

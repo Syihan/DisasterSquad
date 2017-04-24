@@ -61,6 +61,7 @@ layout.append([EXTINGUISHER, BOOTS, AID, -1, -1, -1]) #left three spaces for sto
 layout.append([CANCEL, CANCEL, CANCEL, CHECKOUT, CHECKOUT, CHECKOUT])
 
 done = False
+itemsBought = {}
 
 def openMenu():
     global done
@@ -114,6 +115,7 @@ def openMenu():
         global done
         global selectedItemNr
         global allItems
+        global itemsBought
         global layout
         global position
         global yourMoney
@@ -156,20 +158,18 @@ def openMenu():
             if selectedItemNr < CANCEL:
                 switch_side(selectedItemNr)
             elif selectedItemNr == CANCEL:
-                # layout = [row[:] for row in startingLayout]
                 selectedItemNr = EXTINGUISHER
                 layout = [row[:] for row in startingLayout]
                 done = True
             elif selectedItemNr == CHECKOUT:
                 yourMoney = yourMoney - cartTotal
-                # TODO: update inventory
-                # updateInventory()
-                # layout = [row[:] for row in startingLayout]
+
                 selectedItemNr = EXTINGUISHER
                 done = True
                 for x in range(3, 6):
                     itemNum = layout[0][x]
                     if itemNum!=-1 and itemNum < CANCEL:
+                        itemsBought[itemNum] = allItems[itemNum]
                         del prices[itemNum]
                         layout[0][x] = -1
 
@@ -220,16 +220,12 @@ def openMenu():
     size = (WIN_WIDTH, WIN_HEIGHT)
     screen = pygame.display.set_mode(size)
 
-    items = []
-
     headerFont = pygame.font.Font(None, 68)
     moneyFont = pygame.font.Font(None, 42)
     storeItemsText = headerFont.render("Store Items", 1, YELLOW)
     yourItemsText = headerFont.render("Items to Buy", 1, BLUE)
 
     clock = pygame.time.Clock()
-
-    started = False
 
     # -------- Main Program Loop -----------
     while not done:
@@ -266,3 +262,5 @@ def openMenu():
             pygame.display.flip()
 
             clock.tick(12)
+
+    return itemsBought
