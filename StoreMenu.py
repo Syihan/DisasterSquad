@@ -63,9 +63,12 @@ layout.append([CANCEL, CANCEL, CANCEL, CHECKOUT, CHECKOUT, CHECKOUT])
 done = False
 itemsBought = {}
 
+tooExpensive = False
+
 def openMenu():
     global done
     global cartTotal
+    global tooExpensive
     cartTotal = 0
     startingLayout = [row[:] for row in layout]
 
@@ -119,7 +122,9 @@ def openMenu():
         global layout
         global position
         global yourMoney
+        global tooExpensive
 
+        tooExpensive = False
         if position == -1:
             position = selectedItemNr%3
         x = position
@@ -162,16 +167,19 @@ def openMenu():
                 layout = [row[:] for row in startingLayout]
                 done = True
             elif selectedItemNr == CHECKOUT:
-                yourMoney = yourMoney - cartTotal
+                if cartTotal <= yourMoney:
+                    yourMoney = yourMoney - cartTotal
 
-                selectedItemNr = EXTINGUISHER
-                done = True
-                for x in range(3, 6):
-                    itemNum = layout[0][x]
-                    if itemNum!=-1 and itemNum < CANCEL:
-                        itemsBought[itemNum] = allItems[itemNum]
-                        del prices[itemNum]
-                        layout[0][x] = -1
+                    selectedItemNr = EXTINGUISHER
+                    done = True
+                    for x in range(3, 6):
+                        itemNum = layout[0][x]
+                        if itemNum!=-1 and itemNum < CANCEL:
+                            itemsBought[itemNum] = allItems[itemNum]
+                            del prices[itemNum]
+                            layout[0][x] = -1
+                else:
+                    tooExpensive = True
 
         elif key == pygame.K_s:
             if x<3:
@@ -258,6 +266,8 @@ def openMenu():
             screen.blit(storeMoneyText, (HALF_WIDTH/2 - 30, 2*HEADER_HEIGHT/3+6))
             screen.blit(cartMoneyText, (HALF_WIDTH + HALF_WIDTH/2 - 25, 2*HEADER_HEIGHT/3 + 6))
             screen.blit(yourMoneyText, (HALF_WIDTH + 65, WIN_HEIGHT-55))
+            if tooExpensive == True:
+                screen.blit(moneyFont.render("You don't have enough money!", 1, RED), (HALF_WIDTH - 165, WIN_HEIGHT / 2))
 
             pygame.display.flip()
 
