@@ -305,12 +305,12 @@ def main():
                                     fridge.image = fridge_off
                                     fridge_disconnected = True
                                     cha_ching.play()
-                                    # TODO: add money
+                                    StoreMenu.giveMoney(40)
                                 else:
                                     fridge.image = fridge_on
                                     fridge_disconnected = False
                                     cha_ching.play()
-                                    # TODO: remove money
+                                    StoreMenu.giveMoney(-40)
                                 interact_on = False
                             else:
                                 interact_on = False
