@@ -116,17 +116,17 @@ def main():
         "                                            ",
         "                                            ",
         "                                            ",
-        "                              PP        PP  ",
-        "                              P          P  ",
-        "                              P          P  ",      # house is aligned
-        "                              P          P  ",
-        "             PPPPPPPPPPPPPPPPPPP  PPPPPPPPP ",
-        "             P                           PP ",
-        "             P                           PP ",
-        "                             PPPPPPPPP   PP ",
-        "                             P           PP ",
-        "                             P           PP ",
-        "                             P           PP ",
+        "                              PP        PPPP",
+        "                              P          PPP",
+        "                              P          PPP",      # house is aligned
+        "                              P          PPP",
+        "             PPPPPPPPPPPPPPPPPPP        PPPP",
+        "             P                           PPP",
+        "             P                           PPP",
+        "                             PPP         PPP",
+        "                             P           PPP",
+        "                             P           PPP",
+        "                             P           PPP",
         "                                            "]
 
     for row in level:
