@@ -27,8 +27,8 @@ selectedClose = pygame.image.load('images/selected_close.png')
 
 allItems = {
     EXTINGUISHER: pygame.image.load('images/extinguisher.png'),
-    BOOTS: pygame.image.load('images/extinguisher.png'),
-    AID: pygame.image.load('images/extinguisher.png'),
+    BOOTS: pygame.image.load('images/boots.png'),
+    AID: pygame.image.load('images/first_aid.png'),
 
     CANCEL: pygame.image.load('images/close_button.png'),
     CHECKOUT: pygame.image.load('images/checkout.png'),
@@ -52,7 +52,7 @@ for item in prices:
     storeMoney += prices[item]
 
 cartTotal = 0
-yourMoney = 0
+yourMoney = 30
 position = -1
 width, height = 6, 2
 layout = []

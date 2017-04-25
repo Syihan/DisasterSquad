@@ -25,6 +25,7 @@ pygame.display.set_caption("R.A.N.D.I.")
 
 # Global variables
 Sprites = pygame.sprite.Group()   # sprites manager
+playerHealth = 5
 
 EXTINGUISHER = 0;
 BOOTS = 1;
@@ -39,9 +40,12 @@ def equip_boots():
     ()
 
 def use_aid():
-    ()
+    global playerHealth
+    playerHealth += 1
+    HeartDisplay(playerHealth)
 
 def main():
+    global playerHealth
     # variables
     running = True                    # indicates whether or not the game is running
     left = right = up = down = False  # movement variables
@@ -118,9 +122,9 @@ def main():
     interact_on = False
 
     # load and play the music
-    pygame.mixer.pre_init(44100, 16, 2, 4096) # frequency, size, channels, buffersize
-    pygame.mixer.music.load("audio/background_music.mp3")
-    pygame.mixer.music.play(-1)
+    # pygame.mixer.pre_init(44100, 16, 2, 4096) # frequency, size, channels, buffersize
+    # pygame.mixer.music.load("audio/background_music.mp3")
+    # pygame.mixer.music.play(-1)
 
     # build the level
     x = y = 0
@@ -278,7 +282,7 @@ def main():
                             speedX += -5
                         # moving right
                         if right:
-                            playerSkin.image = playerSheet.get_image(round(222 / 3), 0, round(222 / 3), 123)
+                            playerSkin.image = playerSheet.get_image(round(222 / 3)+3, 0, round(222 / 3), 123)
                             playerSkin.image = pygame.transform.smoothscale(playerSkin.image, (round(float(player.rect.width * 1.3)), player.rect.height))
                             speedX += 5
                         # movement up the ladders
@@ -468,10 +472,10 @@ def HeartDisplay(playerHP):
     if (playerHP == 0):
         #screen.fill((0, 0, 0))
         screen.blit(pygame.image.load("images/gameover.png"), (0,0))
-        pygame.mixer.music.stop()
-        pygame.mixer.Channel(1).stop()
-        pygame.mixer.Channel(2).stop()
-        pygame.mixer.Channel(3).stop()
+        # pygame.mixer.music.stop()
+        # pygame.mixer.Channel(1).stop()
+        # pygame.mixer.Channel(2).stop()
+        # pygame.mixer.Channel(3).stop()
         #Sprites.empty()
     if (playerHP > 0):
         screen.blit(pygame.transform.scale(pygame.image.load("images/heart_red.png"), (32, 32)),
