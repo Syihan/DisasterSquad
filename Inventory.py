@@ -45,7 +45,6 @@ def openInventory(background_img):
         s = pygame.Surface((INV_WIDTH, INV_HEIGHT), pygame.SRCALPHA)  # per-pixel alpha
         s.fill((255, 255, 255, 80))  # notice the alpha value in the color
         screen.blit(s, (0, WIN_HEIGHT-INV_HEIGHT))
-        # pygame.draw.rect(screen, WHITE, [0, WIN_HEIGHT-INV_HEIGHT, INV_WIDTH, INV_HEIGHT])
 
         #close button
         screen.blit(allItems[CANCEL], (5, WIN_HEIGHT - 3*INV_HEIGHT//4))
@@ -54,9 +53,11 @@ def openInventory(background_img):
         for key in allItems:
             if key != CANCEL:
                 if selected_item == key:
-                    pygame.draw.rect(screen, HOVER_ITEM_COLOR, [83+counter*128, WIN_HEIGHT - 140, 130, 135])
+                    sc = pygame.Surface((130, 135), pygame.SRCALPHA)  # per-pixel alpha
+                    sc.fill((255, 255, 255, 115))  # notice the alpha value in the color
+                    screen.blit(sc, (80+counter*128, WIN_HEIGHT - 140))
 
-                screen.blit(allItems[key], (93 + 128 * counter, WIN_HEIGHT-130))
+                screen.blit(allItems[key], (90 + 128 * counter, WIN_HEIGHT-130))
                 counter+=1
 
     def navigate_menu(key):
