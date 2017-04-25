@@ -65,6 +65,10 @@ itemsBought = {}
 
 tooExpensive = False
 
+def giveMoney(money):
+    global yourMoney
+    yourMoney += money
+
 def openMenu():
     global done
     global cartTotal
