@@ -3,6 +3,8 @@ import sys
 from Camera import Camera
 from Sprite import *
 from SpriteSheet import SpriteSheet
+import StoreMenu
+import Inventory
 
 # Constants
 WIN_WIDTH = 800
@@ -24,6 +26,20 @@ pygame.display.set_caption("R.A.N.D.I.")
 # Global variables
 Sprites = pygame.sprite.Group()   # sprites manager
 
+EXTINGUISHER = 0;
+BOOTS = 1;
+AID = 2;
+
+
+#todo implementations for these
+def equip_extinguisher():
+    ()
+
+def equip_boots():
+    ()
+
+def use_aid():
+    ()
 
 def main():
     # variables
@@ -32,10 +48,12 @@ def main():
     floor = 1                         # floor indicator
     platforms = []                    # platform manager
     timer = pygame.time.Clock()       # framerate manager
+
     background = Sprite("images/updated_background.png", 0, 0, 0, 0, 0)  # background image
     background.image = pygame.transform.smoothscale(background.image, (BACKGROUND_WIDTH, BACKGROUND_HEIGHT))
     health_indicator = Sprite("sprite/Indicator.png", 0, WIN_HEIGHT, 0, 0, 3)
     Sprites.add(health_indicator)
+    equippedItem = -1;
 
     # PHASE 1 VARIABLES
     phase_one = False
@@ -186,6 +204,24 @@ def main():
                     phase_one = True
                 if event.key == pygame.K_SPACE:
                     interact_on = True
+                if event.key == pygame.K_b:
+                    Inventory.addItems(StoreMenu.openMenu())
+                if event.key == pygame.K_i:
+                    #returns number key in itemDict if an item equipped, or -1 if cancelled before equipping
+                    left = False
+                    right = False
+                    down = False
+                    up = False
+                    pygame.image.save(screen, "images/savedForInv.png")
+                    pic = pygame.image.load("images/savedForInv.png")
+
+                    equippedItem = Inventory.openInventory(pic)
+                    if equippedItem == AID:
+                        use_aid()
+                    elif equippedItem == EXTINGUISHER:
+                        equip_extinguisher()
+                    elif equippedItem == BOOTS:
+                        equip_boots()
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_d:
