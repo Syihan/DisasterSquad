@@ -38,12 +38,6 @@ def equip_boots():
 def use_aid():
     ()
 
-allItems = {
-    EXTINGUISHER: equip_extinguisher(),
-    BOOTS: equip_boots(),
-    AID: use_aid()
-}
-
 def main():
     # variables
     left = right = up = down = False  # movement variables
@@ -154,8 +148,12 @@ def main():
                     pic = pygame.image.load("images/savedForInv.png")
 
                     equippedItem = Inventory.openInventory(pic)
-                    if equippedItem != -1:
-                        allItems[equippedItem]
+                    if equippedItem == AID:
+                        use_aid()
+                    elif equippedItem == EXTINGUISHER:
+                        equip_extinguisher()
+                    elif equippedItem == BOOTS:
+                        equip_boots()
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_d:
                     right = False
