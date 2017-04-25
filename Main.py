@@ -19,13 +19,15 @@ WATER_LINE = 400
 # PyGame setup
 pygame.init()
 screen = pygame.display.set_mode(DISPLAY)
-pygame.display.set_caption("Maelstrom")
+pygame.display.set_caption("R.A.N.D.I.")
 
 # Global variables
 Sprites = pygame.sprite.Group()   # sprites manager
 
+
 def main():
     # variables
+    running = True                    # indicates whether or not the game is running
     left = right = up = down = False  # movement variables
     floor = 1                         # floor indicator
     platforms = []                    # platform manager
@@ -34,16 +36,50 @@ def main():
     health_indicator = Sprite("sprite/Indicator.png", 0, WIN_HEIGHT, 0, 0, 3)
     Sprites.add(health_indicator)
 
-    # phase 1 variables
+    # PHASE 1 VARIABLES
     phase_one = False
+
+    # Sound bytes
     weather_sounds = pygame.mixer.Channel(2)
     radio_sounds = pygame.mixer.Channel(3)
     thunder = pygame.mixer.Sound("audio/heavy_rain_with_thunder.wav")
     phase1_warning = pygame.mixer.Sound("audio/phase1_warning.wav")
     stillwater = pygame.mixer.Sound("audio/flood.wav")
     zap = pygame.mixer.Sound("audio/zap_damage.wav")
+
+    # Water sprites
     water = Sprite("sprite/water.png", 0, WIN_HEIGHT, 1700, 0, 3)
     Sprites.add(water)
+
+    # Cloud sprites
+    cloud0 = Sprite("sprite/cloud0.png", -300, 0, 0, 0, 3)
+    cloud1 = Sprite("sprite/cloud1.png", -300, 0, 0, 0, 3)
+    cloud2 = Sprite("sprite/cloud2.png", 2000, 0, 0, 0, 3)
+    cloud3 = Sprite("sprite/cloud0.png", -300, 0, 0, 0, 3)
+    cloud4 = Sprite("sprite/cloud1.png", -300, 0, 0, 0, 3)
+    cloud5 = Sprite("sprite/cloud2.png", 2000, 0, 0, 0, 3)
+    cloud0.image = pygame.transform.smoothscale(cloud0.image, (300, 200))  # 300 x 200
+    cloud1.image = pygame.transform.smoothscale(cloud1.image, (300, 200))
+    cloud2.image = pygame.transform.smoothscale(cloud2.image, (300, 200))
+    cloud3.image = pygame.transform.smoothscale(cloud0.image, (300, 200))
+    cloud4.image = pygame.transform.smoothscale(cloud1.image, (300, 200))
+    cloud5.image = pygame.transform.smoothscale(cloud2.image, (300, 200))
+    Sprites.add(cloud0)
+    Sprites.add(cloud1)
+    Sprites.add(cloud2)
+    Sprites.add(cloud3)
+    Sprites.add(cloud4)
+    Sprites.add(cloud5)
+
+    # Rain sprites
+    rain1 = Sprite("sprite/rain1.png", 0, -WIN_HEIGHT, 0, 0)
+    rain2 = Sprite("sprite/rain1.png", 0, - (2 * WIN_HEIGHT), 0, 0)
+    rain1.image = pygame.transform.smoothscale(rain1.image, (BACKGROUND_WIDTH, WIN_HEIGHT))
+    rain2.image = pygame.transform.smoothscale(rain2.image, (BACKGROUND_WIDTH, WIN_HEIGHT))
+    Sprites.add(rain1)
+    Sprites.add(rain2)
+
+    # Timer variables
     phase1_wait_now = phase1_wait_then = pygame.time.get_ticks()
     water_wait_now = water_wait_then = pygame.time.get_ticks()
     warning_wait_now = warning_wait_then = pygame.time.get_ticks()
@@ -105,7 +141,7 @@ def main():
     #Sprites.add(ladderIndicator)
 
     # game time
-    while True:
+    while running:
         # read input
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
@@ -221,33 +257,6 @@ def main():
                                         player.rect.centerx += 1
                                         background.rect.x -= 1
 
-            # if sprite.identity == 3:
-            #     # get list of obj's colliding with current sprite
-            #     hitList = pygame.sprite.spritecollide(sprite, Sprites, False)
-            #     # collision handling for object
-            #     for hit in hitList:
-            #         if hit.identity == 1 or hit.identity == 2:  # the player was hit
-            #             # TODO: Figure out how to diminish player health
-            #             hit.rect.centery -= 1
-            #
-            #     # position adjustments
-            #     while sprite.rect.bottom > BACKGROUND_HEIGHT:
-            #         if sprite.destructable:  # if the obj is destructible and it hits a wall, get rid of it
-            #             Sprites.remove(sprite)
-            #         # sprite.rect.y -= 1
-            #     while sprite.rect.top < 0:
-            #         if sprite.destructable:  # if the obj is destructible and it hits a wall, get rid of it
-            #             Sprites.remove(sprite)
-            #         # sprite.rect.y += 1
-            #     while sprite.rect.right > BACKGROUND_WIDTH:
-            #         if sprite.destructable:  # if the obj is destructible and it hits a wall, get rid of it
-            #             Sprites.remove(sprite)
-            #         sprite.rect.x -= 1
-            #     while sprite.rect.left < 0:
-            #         if sprite.destructable:  # if the obj is destructible and it hits a wall, get rid of it
-            #             Sprites.remove(sprite)
-            #         sprite.rect.x += 1
-
         # Executes Phase 1 if triggered
         if phase_one:
             water_wait_now = zap_wait_now = pygame.time.get_ticks()
@@ -259,13 +268,55 @@ def main():
             # Plays the radio warning
             if not radio_sounds.get_busy() and not warning_over and not flood_over:
                 warning_wait_then = pygame.time.get_ticks()
-                # radio_sounds.play(phase1_warning)
+                radio_sounds.play(phase1_warning)
 
             warning_wait_now = pygame.time.get_ticks()
 
-            # Waits for the audio to finish
-            if warning_wait_now - warning_wait_then >= 00:
+            # Animates rain drops and clouds; also waits for audio to finish
+            if warning_wait_now - warning_wait_then >= 200 and not flood_over:
                 warning_over = True
+                if cloud0.rect.x < 800:
+                    cloud0.rect.x += 5
+                else:
+                    if rain1.rect.y < WIN_HEIGHT:
+                        rain1.rect.y += 10
+                        rain2.rect.y += 10
+                    if rain1.rect.y == WIN_HEIGHT:
+                        rain1.rect.y = - WIN_HEIGHT
+                        rain2.rect.y += 10
+                    if rain2.rect.y == WIN_HEIGHT:
+                        rain1.rect.y += 10
+                        rain2.rect.y = - WIN_HEIGHT
+
+                if cloud1.rect.x < 1000:
+                    cloud1.rect.x += 6
+                if cloud2.rect.x > 1200:
+                    cloud2.rect.x -= 5
+                if cloud3.rect.x < 800:
+                    cloud3.rect.x += 6
+                if cloud4.rect.x < 600:
+                    cloud4.rect.x += 5
+                if cloud5.rect.x > 1400:
+                    cloud5.rect.x -= 5
+
+            # Stops the rain and removes the clouds
+            if flood_over:
+                if rain1.rect.y < WIN_HEIGHT:
+                    rain1.rect.y += 10
+                if rain2.rect.y < WIN_HEIGHT:
+                    rain2.rect.y += 10
+                if cloud0.rect.x > 0:
+                    cloud0.rect.x -= 5
+                if cloud1.rect.x > -300:
+                    cloud1.rect.x -= 5
+                if cloud2.rect.x < BACKGROUND_WIDTH:
+                    cloud2.rect.x += 5
+                if cloud3.rect.x > -300:
+                    cloud3.rect.x -= 5
+                if cloud4.rect.x > -300:
+                    cloud4.rect.x -= 5
+                if cloud5.rect.x < BACKGROUND_WIDTH:
+                    cloud5.rect.x += 5
 
             # As soon as the radio is finished, begin the flood
             if not radio_sounds.get_busy() and warning_over and not flood_over:
@@ -284,15 +335,17 @@ def main():
 
             # If the player reaches below the waterline, he will become damaged
             if water.rect.y < player.rect.bottom < WIN_HEIGHT:
-                health_indicator.rect.y = 0
+                health_indicator.rect.y = 0  # adds the red screen
                 health_indicator.image = pygame.transform.scale(health_indicator.image,
                                                                 (BACKGROUND_WIDTH, BACKGROUND_HEIGHT))
                 if zap_wait_now - zap_wait_then > 1000:
                     zap.play()
                     zap_wait_then = zap_wait_now
-                    playerHealth -= 1
+                    if playerHealth > 0:
+                        playerHealth -= 1
+
             else:
-                health_indicator.rect.y = WIN_HEIGHT
+                health_indicator.rect.y = WIN_HEIGHT  # removes the red screen
 
             # Wait for 10 seconds, then wait for the water to recede
             if phase1_wait_now - phase1_wait_then > 10000 and flood_over:
@@ -365,26 +418,26 @@ def HeartDisplay(playerHP):
         screen.blit(pygame.transform.scale(pygame.image.load("images/heart_black.png"), (32, 32)),
                     (32 * 5 + 20, 10, 32, 32))
 
-def phase1():
-    phase1 = True
-    thunder = pygame.mixer.Sound("audio/heavy_rain_with_thunder.wav")
-    thunder.play()
-    cloudX = 0
-    waterY = 300
-    #cloud0 = Sprite("sprite/cloud0.png", cloudX, 20, 1000, 200, 0)
-    #cloud1 = Sprite("sprite/cloud1.png", BACKGROUND_WIDTH-cloudX, 30, 1000, 200, 0)
-    #cloud2 = Sprite("sprite/cloud2.png", cloudX, 40, 1000, 200, 0)
-    water = Sprite("sprite/water2.png", 0, 0, 300, 300)
-    #Sprites.add(cloud0)
-    #Sprites.add(cloud1)
-    #Sprites.add(cloud2)
-    Sprites.add(water)
-
-    while phase1:
-        if water.rect.centery < WIN_HEIGHT/2:
-            water.rect.centery -= 10
-        else:
-            phase1 = False
+# def phase1():
+#     phase1 = True
+#     thunder = pygame.mixer.Sound("audio/heavy_rain_with_thunder.wav")
+#     thunder.play()
+#     cloudX = 0
+#     waterY = 300
+#     #cloud0 = Sprite("sprite/cloud0.png", cloudX, 20, 1000, 200, 0)
+#     #cloud1 = Sprite("sprite/cloud1.png", BACKGROUND_WIDTH-cloudX, 30, 1000, 200, 0)
+#     #cloud2 = Sprite("sprite/cloud2.png", cloudX, 40, 1000, 200, 0)
+#     water = Sprite("sprite/water2.png", 0, 0, 300, 300)
+#     #Sprites.add(cloud0)
+#     #Sprites.add(cloud1)
+#     #Sprites.add(cloud2)
+#     Sprites.add(water)
+#
+#     while phase1:
+#         if water.rect.centery < WIN_HEIGHT/2:
+#             water.rect.centery -= 10
+#         else:
+#             phase1 = False
 
 
 def complex_camera(camera, target_rect):
