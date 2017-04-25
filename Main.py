@@ -405,8 +405,8 @@ def main():
                 # Moves the waterline progressively upward
                 if water.rect.y > WATER_LINE:
                     if water_wait_now - water_wait_then > 100:
-                        water.rect.y -= 1
-                        water.height += 1
+                        water.rect.y -= 4
+                        water.height += 4
                         water.image = pygame.transform.scale(water.image, (1700, water.height))
                         water.rect = water.rect.clip(pygame.Rect(0, 0, 1700, water.height))
                         water_wait_then = water_wait_now
@@ -453,6 +453,7 @@ def main():
         # draw everything using blit over the .draw() function (more control with camera)
         for sprite in Sprites:
             screen.blit(sprite.image, camera.apply(sprite))
+        screen.blit(playerSkin.image, camera.apply(playerSkin))  # ensures player comes in front of the camera
 
         #hp display
         HeartDisplay(playerHealth)
