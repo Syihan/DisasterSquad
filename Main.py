@@ -414,6 +414,7 @@ def main():
                     phase1_wait_then = pygame.time.get_ticks()
                     flood_over = True
 
+
             # If the player reaches below the waterline, he will become damaged
             if water.rect.y < player.rect.bottom < WIN_HEIGHT:
                 health_indicator.rect.y = 0  # adds the red screen
@@ -441,6 +442,17 @@ def main():
                         water_wait_then = water_wait_now
                 else:
                     phase_one = False
+                    screen.fill((192, 192, 192))
+                    # pygame.display.flip()
+                    screen.blit(pygame.image.load("images/endflood.png"), (0,0))
+                    myfont1 = pygame.font.SysFont(None, 32)
+                    text1 = myfont1.render("YOU SURVIVED THE FLOOD!", 1, (100, 54, 149))
+                    text2 = myfont1.render("Thanks for playing the R.A.N.D.I. demo!", 1, (100, 54, 149))
+                    # screen.blit(text2, (WIN_WIDTH / 2 - 50, WIN_HEIGHT / 2))
+                    # screen.blit(text1, (WIN_WIDTH / 2 - 50, WIN_HEIGHT / 2 - 100))
+                    pygame.display.flip()
+                    pygame.time.wait(5000)
+                    pygame.quit()
 
             phase1_wait_now = pygame.time.get_ticks()
 
@@ -467,7 +479,10 @@ def HeartDisplay(playerHP):
     #gameover = Sprite("images/gameover.png", 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT)
     if (playerHP == 0):
         #screen.fill((0, 0, 0))
+        myfont = pygame.font.SysFont(None, 16)
+        text = myfont.render("Version 0.1.0", 1, (255,255,255))
         screen.blit(pygame.image.load("images/gameover.png"), (0,0))
+        screen.blit(text, (10, 620))
         pygame.display.flip()
         pygame.mixer.music.stop()
         pygame.mixer.Channel(1).stop()
