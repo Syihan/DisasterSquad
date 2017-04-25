@@ -350,12 +350,12 @@ def main():
             # Plays the radio warning
             if not radio_sounds.get_busy() and not warning_over and not flood_over:
                 warning_wait_then = pygame.time.get_ticks()
-                # radio_sounds.play(phase1_warning)
+                radio_sounds.play(phase1_warning)
 
             warning_wait_now = pygame.time.get_ticks()
 
             # Animates rain drops and clouds; also waits for audio to finish
-            if warning_wait_now - warning_wait_then >= 00 and not flood_over:
+            if warning_wait_now - warning_wait_then >= 200 and not flood_over:
                 warning_over = True
                 if cloud0.rect.x < 800:
                     cloud0.rect.x += 5
@@ -449,8 +449,6 @@ def main():
                     myfont1 = pygame.font.SysFont(None, 32)
                     text1 = myfont1.render("YOU SURVIVED THE FLOOD!", 1, (100, 54, 149))
                     text2 = myfont1.render("Thanks for playing the R.A.N.D.I. demo!", 1, (100, 54, 149))
-                    # screen.blit(text2, (WIN_WIDTH / 2 - 50, WIN_HEIGHT / 2))
-                    # screen.blit(text1, (WIN_WIDTH / 2 - 50, WIN_HEIGHT / 2 - 100))
                     pygame.display.flip()
                     pygame.time.wait(5000)
                     pygame.quit()
@@ -478,9 +476,7 @@ def main():
 def HeartDisplay(playerHP):
     # Health Display If Chain
     # heart 1
-    #gameover = Sprite("images/gameover.png", 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT)
     if (playerHP == 0):
-        #screen.fill((0, 0, 0))
         myfont = pygame.font.SysFont(None, 16)
         text = myfont.render("Version 0.1.0", 1, (255,255,255))
         screen.blit(pygame.image.load("images/gameover.png"), (0,0))
