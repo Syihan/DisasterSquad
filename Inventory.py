@@ -42,7 +42,10 @@ def openInventory(background_img):
 
     def draw_inventory(screen, selected_item):
         # background
-        pygame.draw.rect(screen, WHITE, [0, WIN_HEIGHT-INV_HEIGHT, INV_WIDTH, INV_HEIGHT])
+        s = pygame.Surface((INV_WIDTH, INV_HEIGHT), pygame.SRCALPHA)  # per-pixel alpha
+        s.fill((255, 255, 255, 80))  # notice the alpha value in the color
+        screen.blit(s, (0, WIN_HEIGHT-INV_HEIGHT))
+        # pygame.draw.rect(screen, WHITE, [0, WIN_HEIGHT-INV_HEIGHT, INV_WIDTH, INV_HEIGHT])
 
         #close button
         screen.blit(allItems[CANCEL], (5, WIN_HEIGHT - 3*INV_HEIGHT//4))
