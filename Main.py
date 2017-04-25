@@ -49,7 +49,7 @@ def main():
     platforms = []                    # platform manager
     timer = pygame.time.Clock()       # framerate manager
 
-    background = Sprite("images/updated_background.png", 0, 0, 0, 0, 0)  # background image
+    background = Sprite("images/background.png", 0, 0, 0, 0, 0)  # background image
     background.image = pygame.transform.smoothscale(background.image, (BACKGROUND_WIDTH, BACKGROUND_HEIGHT))
     startscreen = Sprite("images/startscreen.png", 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, 0)
     health_indicator = Sprite("sprite/Indicator.png", 0, WIN_HEIGHT, 0, 0, 3)
@@ -166,9 +166,6 @@ def main():
     Sprites.add(player)
     Sprites.add(playerSkin)
     playerHealth = 5
-
-    #ladderIndicator = Sprite("sprite/Indicator.png", 1240, (len(level)*25.5) - 35*2 - 5, 45, 45, 0)
-    #Sprites.add(ladderIndicator)
 
 
     end_it = False
@@ -511,27 +508,6 @@ def HeartDisplay(playerHP):
     else:
         screen.blit(pygame.transform.scale(pygame.image.load("images/heart_black.png"), (32, 32)),
                     (32 * 5 + 20, 10, 32, 32))
-
-# def phase1():
-#     phase1 = True
-#     thunder = pygame.mixer.Sound("audio/heavy_rain_with_thunder.wav")
-#     thunder.play()
-#     cloudX = 0
-#     waterY = 300
-#     #cloud0 = Sprite("sprite/cloud0.png", cloudX, 20, 1000, 200, 0)
-#     #cloud1 = Sprite("sprite/cloud1.png", BACKGROUND_WIDTH-cloudX, 30, 1000, 200, 0)
-#     #cloud2 = Sprite("sprite/cloud2.png", cloudX, 40, 1000, 200, 0)
-#     water = Sprite("sprite/water2.png", 0, 0, 300, 300)
-#     #Sprites.add(cloud0)
-#     #Sprites.add(cloud1)
-#     #Sprites.add(cloud2)
-#     Sprites.add(water)
-#
-#     while phase1:
-#         if water.rect.centery < WIN_HEIGHT/2:
-#             water.rect.centery -= 10
-#         else:
-#             phase1 = False
 
 
 def complex_camera(camera, target_rect):
