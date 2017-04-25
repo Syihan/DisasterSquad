@@ -33,6 +33,7 @@ def main():
     platforms = []                    # platform manager
     timer = pygame.time.Clock()       # framerate manager
     background = Sprite("images/full background.png", 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, 0)  # background image
+    startscreen = Sprite("images/startscreen.png", 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, 0)
     health_indicator = Sprite("sprite/Indicator.png", 0, WIN_HEIGHT, 0, 0, 3)
     Sprites.add(health_indicator)
 
@@ -140,8 +141,27 @@ def main():
     #ladderIndicator = Sprite("sprite/Indicator.png", 1240, (len(level)*25.5) - 35*2 - 5, 45, 45, 0)
     #Sprites.add(ladderIndicator)
 
+
+    end_it = False
+    while(end_it == False):
+        screen.fill((0,0,0))
+        screen.blit(startscreen.image, startscreen.rect)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
+                sys.exit()
+            # detecting button presses
+            if event.type == pygame.KEYDOWN:
+                # enter key
+                if event.key == pygame.K_RETURN:
+                    end_it = True
+        pygame.display.flip()
+
+
+
     # game time
     while running:
+
+
         # read input
         for event in pygame.event.get():
             if event.type == pygame.QUIT or (event.type == pygame.KEYDOWN and event.key == pygame.K_ESCAPE):
@@ -343,6 +363,9 @@ def main():
                     zap_wait_then = zap_wait_now
                     if playerHealth > 0:
                         playerHealth -= 1
+                    if playerHealth == 0:
+                        zap.stop()
+                        Sprites.empty()
 
             else:
                 health_indicator.rect.y = WIN_HEIGHT  # removes the red screen
@@ -379,6 +402,15 @@ def main():
 def HeartDisplay(playerHP):
     # Health Display If Chain
     # heart 1
+    #gameover = Sprite("images/gameover.png", 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT)
+    if (playerHP == 0):
+        #screen.fill((0, 0, 0))
+        screen.blit(pygame.image.load("images/gameover.png"), (0,0))
+        pygame.mixer.music.stop()
+        pygame.mixer.Channel(1).stop()
+        pygame.mixer.Channel(2).stop()
+        pygame.mixer.Channel(3).stop()
+        #Sprites.empty()
     if (playerHP > 0):
         screen.blit(pygame.transform.scale(pygame.image.load("images/heart_red.png"), (32, 32)),
                     (32, 10, 32, 32))
