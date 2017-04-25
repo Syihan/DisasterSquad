@@ -34,7 +34,7 @@ def addItems(items):
         allItems[key] = items[key]
         layout.append(key)
 
-def openInventory():
+def openInventory(background_img):
     global done
     global allItems
     global layout
@@ -107,7 +107,7 @@ def openInventory():
                 return item
 
         if not done:
-            screen.fill(BLACK)
+            screen.blit(background_img, (0,0))
 
             draw_inventory(screen, selectedItemNr)
             if selectedItemNr == CANCEL:

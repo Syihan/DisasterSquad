@@ -146,7 +146,14 @@ def main():
                     Inventory.addItems(StoreMenu.openMenu())
                 if event.key == pygame.K_i:
                     #returns number key in itemDict if an item equipped, or -1 if cancelled before equipping
-                    equippedItem = Inventory.openInventory()
+                    left = False
+                    right = False
+                    down = False
+                    up = False
+                    pygame.image.save(screen, "images/savedForInv.png")
+                    pic = pygame.image.load("images/savedForInv.png")
+
+                    equippedItem = Inventory.openInventory(pic)
                     if equippedItem != -1:
                         allItems[equippedItem]
             if event.type == pygame.KEYUP:
