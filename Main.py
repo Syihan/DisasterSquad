@@ -55,8 +55,8 @@ def main():
 
     # load and play the music
     pygame.mixer.pre_init(44100, 16, 2, 4096) # frequency, size, channels, buffersize
-    # pygame.mixer.music.load("audio/background_music.mp3")
-    # pygame.mixer.music.play(-1)
+    pygame.mixer.music.load("audio/background_music.mp3")
+    pygame.mixer.music.play(-1)
 
     # build the level
     x = y = 0

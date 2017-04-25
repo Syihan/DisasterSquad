@@ -64,6 +64,7 @@ done = False
 itemsBought = {}
 
 tooExpensive = False
+nothingToPurchase = False
 
 def giveMoney(money):
     global yourMoney
@@ -127,8 +128,10 @@ def openMenu():
         global position
         global yourMoney
         global tooExpensive
+        global nothingToPurchase
 
         tooExpensive = False
+        nothingToPurchase = False
         if position == -1:
             position = selectedItemNr%3
         x = position
@@ -171,7 +174,9 @@ def openMenu():
                 layout = [row[:] for row in startingLayout]
                 done = True
             elif selectedItemNr == CHECKOUT:
-                if cartTotal <= yourMoney:
+                if cartTotal == 0:
+                    nothingToPurchase = True
+                elif cartTotal <= yourMoney:
                     yourMoney = yourMoney - cartTotal
 
                     selectedItemNr = EXTINGUISHER
@@ -272,6 +277,8 @@ def openMenu():
             screen.blit(yourMoneyText, (HALF_WIDTH + 65, WIN_HEIGHT-55))
             if tooExpensive == True:
                 screen.blit(moneyFont.render("You don't have enough money!", 1, RED), (HALF_WIDTH - 165, WIN_HEIGHT / 2))
+            elif nothingToPurchase == True:
+                screen.blit(moneyFont.render("Nothing selected to purchase!", 1, RED), (HALF_WIDTH - 180, WIN_HEIGHT / 2))
 
             pygame.display.flip()
 
