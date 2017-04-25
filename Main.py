@@ -468,10 +468,13 @@ def HeartDisplay(playerHP):
     if (playerHP == 0):
         #screen.fill((0, 0, 0))
         screen.blit(pygame.image.load("images/gameover.png"), (0,0))
+        pygame.display.flip()
         pygame.mixer.music.stop()
         pygame.mixer.Channel(1).stop()
         pygame.mixer.Channel(2).stop()
         pygame.mixer.Channel(3).stop()
+        pygame.time.wait(5000)
+        pygame.quit()
         #Sprites.empty()
     if (playerHP > 0):
         screen.blit(pygame.transform.scale(pygame.image.load("images/heart_red.png"), (32, 32)),
