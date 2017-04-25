@@ -45,10 +45,8 @@ def main():
     # Sound bytes
     weather_sounds = pygame.mixer.Channel(2)
     radio_sounds = pygame.mixer.Channel(3)
-    event_sounds = pygame.mixer.Channel(4)
     thunder = pygame.mixer.Sound("audio/heavy_rain_with_thunder.wav")
     phase1_warning = pygame.mixer.Sound("audio/phase1_warning.wav")
-    stillwater = pygame.mixer.Sound("audio/flood.wav")
     zap = pygame.mixer.Sound("audio/zap_damage.wav")
     cha_ching = pygame.mixer.Sound("audio/cha_ching.wav")
 
