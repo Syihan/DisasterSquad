@@ -32,24 +32,36 @@ def main():
     floor = 1                         # floor indicator
     platforms = []                    # platform manager
     timer = pygame.time.Clock()       # framerate manager
-    background = Sprite("images/full background.png", 0, 0, BACKGROUND_WIDTH, BACKGROUND_HEIGHT, 0)  # background image
+    background = Sprite("images/updated_background.png", 0, 0, 0, 0, 0)  # background image
+    background.image = pygame.transform.smoothscale(background.image, (BACKGROUND_WIDTH, BACKGROUND_HEIGHT))
     health_indicator = Sprite("sprite/Indicator.png", 0, WIN_HEIGHT, 0, 0, 3)
     Sprites.add(health_indicator)
 
     # PHASE 1 VARIABLES
     phase_one = False
+    fridge_disconnected = False
+    has_healthkit = False
 
     # Sound bytes
     weather_sounds = pygame.mixer.Channel(2)
     radio_sounds = pygame.mixer.Channel(3)
+    event_sounds = pygame.mixer.Channel(4)
     thunder = pygame.mixer.Sound("audio/heavy_rain_with_thunder.wav")
     phase1_warning = pygame.mixer.Sound("audio/phase1_warning.wav")
     stillwater = pygame.mixer.Sound("audio/flood.wav")
     zap = pygame.mixer.Sound("audio/zap_damage.wav")
+    cha_ching = pygame.mixer.Sound("audio/cha_ching.wav")
 
-    # Water sprites
+    # Object sprites
     water = Sprite("sprite/water.png", 0, WIN_HEIGHT, 1700, 0, 3)
+    fridge = Sprite("sprite/fridge_on.png", 1100, 545, 0, 0, 3)
+    fridge_on = pygame.image.load("sprite/fridge_on.png")
+    fridge_on = pygame.transform.smoothscale(fridge_on, (80, 45))
+    fridge_off = pygame.image.load("sprite/fridge_off.png")
+    fridge_off = pygame.transform.smoothscale(fridge_off, (80, 45))
+    fridge.image = pygame.transform.smoothscale(fridge.image, (80, 45))
     Sprites.add(water)
+    Sprites.add(fridge)
 
     # Cloud sprites
     cloud0 = Sprite("sprite/cloud0.png", -300, 0, 0, 0, 3)
@@ -86,6 +98,7 @@ def main():
     zap_wait_now = zap_wait_then = pygame.time.get_ticks()
     warning_over = False
     flood_over = False
+    interact_on = False
 
     # load and play the music
     pygame.mixer.pre_init(44100, 16, 2, 4096) # frequency, size, channels, buffersize
@@ -137,9 +150,6 @@ def main():
     Sprites.add(playerSkin)
     playerHealth = 5
 
-    #ladderIndicator = Sprite("sprite/Indicator.png", 1240, (len(level)*25.5) - 35*2 - 5, 45, 45, 0)
-    #Sprites.add(ladderIndicator)
-
     # game time
     while running:
         # read input
@@ -176,6 +186,8 @@ def main():
                 # Phase 1 is triggered
                 if event.key == pygame.K_1:
                     phase_one = True
+                if event.key == pygame.K_SPACE:
+                    interact_on = True
 
             if event.type == pygame.KEYUP:
                 if event.key == pygame.K_d:
@@ -236,6 +248,22 @@ def main():
                             if floor == 2 and 1010 < sprite.rect.centerx < 1040:
                                 sprite.rect.centery = 450
                                 floor = 1
+                        # unplugs the freezer
+                        if interact_on:
+                            if 1100 < sprite.rect.centerx < 1180 and 450 < sprite.rect.centery < 640:
+                                if not fridge_disconnected:
+                                    fridge.image = fridge_off
+                                    fridge_disconnected = True
+                                    cha_ching.play()
+                                    # TODO: add money
+                                else:
+                                    fridge.image = fridge_on
+                                    fridge_disconnected = False
+                                    cha_ching.play()
+                                    # TODO: remove money
+                                interact_on = False
+                            else:
+                                interact_on = False
 
                         # moves the player
                         sprite.rect.centerx += speedX
@@ -343,6 +371,8 @@ def main():
                     zap_wait_then = zap_wait_now
                     if playerHealth > 0:
                         playerHealth -= 1
+                    # else:
+                        # TODO: Game over screen
 
             else:
                 health_indicator.rect.y = WIN_HEIGHT  # removes the red screen
