@@ -122,9 +122,9 @@ def main():
     interact_on = False
 
     # load and play the music
-    # pygame.mixer.pre_init(44100, 16, 2, 4096) # frequency, size, channels, buffersize
-    # pygame.mixer.music.load("audio/background_music.mp3")
-    # pygame.mixer.music.play(-1)
+    pygame.mixer.pre_init(44100, 16, 2, 4096) # frequency, size, channels, buffersize
+    pygame.mixer.music.load("audio/background_music.mp3")
+    pygame.mixer.music.play(-1)
 
     # build the level
     x = y = 0
@@ -469,10 +469,10 @@ def HeartDisplay(playerHP):
     if (playerHP == 0):
         #screen.fill((0, 0, 0))
         screen.blit(pygame.image.load("images/gameover.png"), (0,0))
-        # pygame.mixer.music.stop()
-        # pygame.mixer.Channel(1).stop()
-        # pygame.mixer.Channel(2).stop()
-        # pygame.mixer.Channel(3).stop()
+        pygame.mixer.music.stop()
+        pygame.mixer.Channel(1).stop()
+        pygame.mixer.Channel(2).stop()
+        pygame.mixer.Channel(3).stop()
         #Sprites.empty()
     if (playerHP > 0):
         screen.blit(pygame.transform.scale(pygame.image.load("images/heart_red.png"), (32, 32)),

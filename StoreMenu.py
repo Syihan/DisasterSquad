@@ -52,7 +52,7 @@ for item in prices:
     storeMoney += prices[item]
 
 cartTotal = 0
-yourMoney = 30
+yourMoney = 0
 position = -1
 width, height = 6, 2
 layout = []
