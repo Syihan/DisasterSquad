@@ -55,9 +55,9 @@ def openInventory(background_img):
                 if selected_item == key:
                     sc = pygame.Surface((130, 135), pygame.SRCALPHA)  # per-pixel alpha
                     sc.fill((255, 255, 255, 115))  # notice the alpha value in the color
-                    screen.blit(sc, (80+counter*128, WIN_HEIGHT - 140))
+                    screen.blit(sc, (110+counter*128, WIN_HEIGHT - 143))
 
-                screen.blit(allItems[key], (90 + 128 * counter, WIN_HEIGHT-130))
+                screen.blit(allItems[key], (120 + 128 * counter, WIN_HEIGHT-133))
                 counter+=1
 
     def navigate_menu(key):

@@ -35,15 +35,15 @@ allItems = {
 }
 
 info = {
-    EXTINGUISHER: "Fire Extinguisher ($30): Used to put out any fire.",
+    EXTINGUISHER: "Fire Extinguisher ($50): Used to put out any fire.",
     BOOTS: "Boots ($90): Help prevent electrocution.",
-    AID: "First Aid ($40): Restores some health to the player.",
+    AID: "First Aid ($30): Restores some health to the player.",
 }
 
 prices = {
-    EXTINGUISHER: 30,
+    EXTINGUISHER: 50,
     BOOTS: 90,
-    AID: 40
+    AID: 30
 }
 selectedItemNr = EXTINGUISHER
 storeMoney = 0
@@ -52,7 +52,7 @@ for item in prices:
     storeMoney += prices[item]
 
 cartTotal = 0
-yourMoney = 100
+yourMoney = 0
 position = -1
 width, height = 6, 2
 layout = []
