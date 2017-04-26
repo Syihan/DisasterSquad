@@ -3,8 +3,8 @@ import sys
 from Camera import Camera
 from Sprite import *
 from SpriteSheet import SpriteSheet
-import StoreMenu
-import Inventory
+from StoreMenu import *
+from Inventory import *
 
 # Constants
 WIN_WIDTH = 800
@@ -122,9 +122,9 @@ def main():
     interact_on = False
 
     # load and play the music
-    pygame.mixer.pre_init(44100, 16, 2, 4096) # frequency, size, channels, buffersize
-    pygame.mixer.music.load("audio/background_music.mp3")
-    pygame.mixer.music.play(-1)
+    # pygame.mixer.pre_init(44100, 16, 2, 4096) # frequency, size, channels, buffersize
+    # pygame.mixer.music.load("audio/background_music.mp3")
+    # pygame.mixer.music.play(-1)
 
     # build the level
     x = y = 0
@@ -225,7 +225,7 @@ def main():
                 if event.key == pygame.K_SPACE:
                     interact_on = True
                 if event.key == pygame.K_b:
-                    Inventory.addItems(StoreMenu.openMenu())
+                    addItems(openMenu())
                 if event.key == pygame.K_i:
                     #returns number key in itemDict if an item equipped, or -1 if cancelled before equipping
                     left = False
@@ -235,7 +235,7 @@ def main():
                     pygame.image.save(screen, "images/savedForInv.png")
                     pic = pygame.image.load("images/savedForInv.png")
 
-                    equippedItem = Inventory.openInventory(pic)
+                    equippedItem = openInventory(pic)
                     if equippedItem == AID:
                         use_aid()
                     elif equippedItem == EXTINGUISHER:
@@ -309,12 +309,12 @@ def main():
                                     fridge.image = fridge_off
                                     fridge_disconnected = True
                                     cha_ching.play()
-                                    StoreMenu.giveMoney(40)
+                                    giveMoney(40)
                                 else:
                                     fridge.image = fridge_on
                                     fridge_disconnected = False
                                     cha_ching.play()
-                                    StoreMenu.giveMoney(-40)
+                                    giveMoney(-40)
                                 interact_on = False
                             else:
                                 interact_on = False
@@ -482,10 +482,10 @@ def HeartDisplay(playerHP):
         screen.blit(pygame.image.load("images/gameover.png"), (0,0))
         screen.blit(text, (10, 620))
         pygame.display.flip()
-        pygame.mixer.music.stop()
-        pygame.mixer.Channel(1).stop()
-        pygame.mixer.Channel(2).stop()
-        pygame.mixer.Channel(3).stop()
+        # pygame.mixer.music.stop()
+        # pygame.mixer.Channel(1).stop()
+        # pygame.mixer.Channel(2).stop()
+        # pygame.mixer.Channel(3).stop()
         pygame.time.wait(5000)
         pygame.quit()
         #Sprites.empty()
