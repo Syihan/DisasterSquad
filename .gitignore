@@ -1,3 +1,6 @@
+# Exclude auto-generated folders and file types
+__pycache__/
+.vscode/
 .idea/
 *.pyc
 *.pyo
