@@ -1,8 +1,8 @@
 # R.A.N.D.I.: Robots Against Natural Disasters Incidences
 
-Demo for R.A.N.D.I. (Robots Against Natural Disaster Incidences). The goal of this game is to survive the disaster scenarios creatively. You can earn rewards by preparing things in the house for disaster and shopping for things in the store. Worked on as the final project for CS 475 (Spring 2017).
+Demo for R.A.N.D.I. (Robots Against Natural Disaster Incidences). Worked on as the final project for CS 475 (Spring 2017).
 
-RANDI is a game about survival. The player takes on the role of RANDI, a safety robot built to prepare a household as part of a government initiative. RANDI is in his final test run and it's up to you to make sure he passes inspection so that he can be deployed to millions of American households worldwide! Make sure he passes all of the tests by avoiding all of the natural disasters that threaten to destroy the house.
+RANDI is a game about survival. The player takes on the role of RANDI, a safety robot built to prepare a household for natural disasters as part of a government initiative. RANDI is in his final test run and it's up to you to make sure he passes inspection so that he can be deployed to millions of American households worldwide! Make sure he passes all of the tests by avoiding all of the natural disasters that threaten to destroy the house. The goal is to survive the disaster scenarios creatively. You can earn rewards by preparing things in the house for disaster and shopping for things in the store.
 
 ## Getting Started
 
